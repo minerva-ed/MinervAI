@@ -1,8 +1,11 @@
 'use client';
+import { useRouter } from 'next/navigation'
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 export default function FileUploader() {
+    const router = useRouter();
+
     const [file, setFile] = useState<File | undefined>();
     const [studentCount, setStudentCount] = useState<number>(6);
 
@@ -19,18 +22,20 @@ export default function FileUploader() {
 
         const formData = new FormData();
 
-        alert(file.name);
+
+        formData.append('file', file);
+        formData.append('student_count', studentCount.toString());
 
         /*
-        formData.append('file', file);
-        formData.append('upload_preset', 'test-react-uploads-unsigned');
-        formData.append('api_key', import.meta.env.VITE_CLOUDINARY_API_KEY);
-
-        const results = await fetch('https://api.cloudinary.com/v1_1/colbycloud-examples/image/upload', {
+        const res = await fetch('https://api.cloudinary.com/v1_1/colbycloud-examples/image/upload', {
             method: 'POST',
             body: formData
-        }).then(r => r.json());
+        })
+
+        const data = await res.json();
         */
+
+        router.push(`/results/${8901234}`);
     }
 
     const onDrop = useCallback((acceptedFiles: Array<File>) => {
