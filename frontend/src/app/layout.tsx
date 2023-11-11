@@ -18,7 +18,7 @@ export default function RootLayout({
           <header className="flex justify-between items-center py-8">
             <a href="/" className="text-5xl font-bold font-mono">Minerv<span className="text-indigo-700 font-bold">AI</span></a>
             <div className="text-lg font-mono flex gap-4">
-              <a href="" className="hover:underline underline-offset-2 decoration-dotted">About</a>
+              <a href="#" className="hover:underline underline-offset-2 decoration-dotted">About</a>
               <a href="#" className="hover:underline underline-offset-2 decoration-dotted">Mission</a>
               <a href="#" className="hover:underline underline-offset-2 decoration-dotted">Join</a>
             </div>
