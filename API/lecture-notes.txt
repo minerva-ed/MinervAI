@@ -1,0 +1,357 @@
+
+
+\reddate{9/8/2023}
+\section{Binary operation}
+\subsection*{Definition: Binary operation}
+If $S$ is a set, then a binary operation $*$ on $S$ is a function, that associates to each ordered pair ($s_1, s_2$) of elements in s, an element of S, which is denoted by $s_1 * s_2$.
+
+Note: order matters.
+
+\example
+\begin{enumerate}
+    \item $(\mathbb{Z}, +)$ is a binary operation.
+    \item $(\mathbb{Z}, \cdot)$ is a binary operation.
+    \item $(\mathbb{Z}, \textbf{divide})$ is not a binary operation.
+\end{enumerate}
+\definition{Commutative}
+$s_1 * s_2 \neq s_2 * s_1$ for some $s_1, s_2 \in S$. Then $*$ is called a non-commutative binary operation.
+\definition{Associative}
+It is associative if $(s_1 * s_2) * s_3 = s_1 * (s_2 * s_3)$ for all $s_1, s_2, s_3 \in S$.
+
+\subsection*{Examples}
+\begin{enumerate}
+    \item $(\mathbb{Z}, -)$ is not associative nor commutative
+    \item Define $M_{2,2} = 2 x 2$ matrices with real entries. Then $(M_{2,2}, +)$ is associative and commutative.
+    \item But $(M_{2,2}, \cdot)$ is not commutative but is associative. Because think of matrix multiplication as composition of linear transformations, which is associative but not commutative.
+\end{enumerate}
+\section{Groups}
+\subsection*{Definition: Group}
+Suppose that 
+\begin{enumerate}
+    \item $G$ is a set and $*$ is a binary operation on $G$.
+    \item $*$ is associative. 
+    \item There exists an element $e \in G$ such that $x * e = e * x = x$ for all $x \in G$. 
+    \item For each $x \in G$, there exists an element $y \in G$ such that $x * y = y * x = e$. 
+\end{enumerate}
+Then $G$ is called a group and $*$ is called a group operation on $G$.
+\subsection*{Notes}
+\begin{enumerate}
+    \item $G$ is nonempty as there requires to be an identity element.
+    \item $e$ is called the identity element of G. ($e$ will be proven to be unique)
+    \item $y$ is called the\footnote[1]{The uniqueness of the inverse will be proven in future lectures} inverse of $x$ and is denoted by $x^{-1}$. This goes both ways for $x$ and $y$ as axiom 3 is symmetric.
+\end{enumerate}
+\subsection*{Definition: Abelian}
+If $*$ is commutative, then $G$ is called an abelian group.
+\subsection*{Examples}
+Consider $(\mathbb{Z}, +)$, it is a group.
+\begin{enumerate}
+    \item $+$ is a binary operation on $\mathbb{Z}$.
+    \item $+$ is associative.
+    \item 0 is the identity element.
+    \item If $n \in \mathbb{Z}$, then $-n$ is the inverse of $n$.
+\end{enumerate}
+\example
+Consider $(\mathbb{Z}, \cdot)$, it is not a group. Since 0 has no inverse. But $(\mathbb{Z} - \{0\}, \cdot)$ is a group\footnote[2]{Try proving this}.
+\example
+General linear group $GL(2, \mathbb{R})$ is the set of all invertible $2 \times 2$ matrices with real entries. Then $(GL(2, \mathbb{R}), \cdot)$ is a group.
+
+\reddate{9/11/2023}
+
+\begin{enumerate}
+    \item $\cdot$ is a binary operation on $GL(2, \mathbb{R})$ because the product of two invertible matrices is invertible since $(AB)^{-1} = B^{-1}A^{-1}$.
+    \item Associative.
+    \item $I_2$ is the identity element.
+    \item Since $A$ is invertible, $A^{-1}$ is the inverse of $A$.
+\end{enumerate}
+\example
+Special linear group $SL (2, \mathbb{R})$ is the set of all $2 \times 2$ matrices with real entries and determinant 1. Then $(SL(2, \mathbb{R}), \cdot)$ is a group.
+\begin{enumerate}
+    \item $\cdot$ is a binary operation on $SL(2, \mathbb{R})$ because the product of two matrices with determinant 1 has determinant 1.
+    \item Associative.
+    \item $I_2$ is the identity element.
+    \item Since $A$ is invertible, $A^{-1}$ is the inverse of $A$.
+\end{enumerate}
+\example
+Consider modular set $\mathbb{Z}_n = \{0, 1, 2, \dots, n - 1\}$ with addition modulo $n$. Then $(\mathbb{Z}_n, +)$ is a group.
+
+Note: A Lie group is a special kind of group that is also a differentiable manifold. This means that the set is not just a collection of elements, but these elements have a smooth structure, like points on a curve or surface. Furthermore, the group operations (like multiplication and finding the inverse) are smooth functions.
+
+$GL(n, \mathbb{R})$ and $SL(n, \mathbb{R})$ are examples of Lie groups, because the set of invertible matrices forms an open subset in the space of all matrices and matrix multiplication and inversion are smooth operations, $GL(n, \mathbb{R})$ is a Lie group.
+
+\reddate{9/13/2023}
+\definition{Remainder and division algorithm}
+$\mathbf{\bar{a}}$: divide $a$ by $n \in \mathbb{Z}$, and look at remainder.
+
+\noindent \textbf{Division algorithm}: If $a$ and $n \in \mathbb{Z}$ and n in positive, then $\exists$ unique integers q and r such that $a = nq + r$, with $0 \leq r < n$.
+\begin{proof}
+    \hfill
+    \begin{enumerate}
+        \item  \textbf{Existance}: Take the largest multiple of $n$ that is less than or equal to $a$. Then $qn\leq a$. Choose $r = a - qn \geq 0$. Note that $r < n$ because if $r \geq n$, then $r - n = a - qn - n = a - (q + 1)n \geq 0$, so $q + 1$ is a larger multiple of $n$ than $q$, which is a contradiction against the fact that $q$ is the largest multiple of $n$ that is less than or equal to $a$.
+
+        \item  \textbf{Uniqueness}: If $q_1n + r_1 = q_2n + r_2 = a$, then $q_1n - q_2n = r_2 - r_1$, so $(q_1 - q_2)n = r_2 - r_1$ (LHS is an integer multiple of $n$). Since $0 \leq r_1, r_2 < n$, $-n < r_2 - r_1 < n$, so $q_1 - q_2 = 0$ and $r_1 = r_2$. Therefore, $q_1 = q_2$ and $r_1 = r_2$, so the quotient and remainder are unique.
+        
+    \end{enumerate}
+\end{proof}
+
+\subsection*{Claim}
+$x \oplus y = \overline{x + y}$
+$(\mathbb{Z}_n, \oplus)$ is a group.
+\begin{proof}
+    \hfill
+    \begin{enumerate}
+        \item $\oplus$ is a binary operation on $\mathbb{Z}_n$ because $\overline{x + y} < n$ so  $overline{x + y} \in \mathbb{Z}_n$.
+        \item\textbf{Associative}: To show that $\oplus$ is associative, we need to show that $(x \oplus y)\oplus z`'= x \oplus (y \oplus z)$ for all $x, y, z \in \mathbb{Z}_n$. By definition, $(x \oplus y)\oplus z = \overline{\overline{x + y} + z} = \overline{x + y + z}$. Similarly, $x \oplus (y \oplus z) = \overline{x + \overline{y + z}} = \overline{x + y + z}$. Therefore, $(x \oplus y)\oplus z = x \oplus (y \oplus z)$.
+        \item $\bar{0}$ is the identity element. Let $x \in \mathbb{Z}_n$. $0 \oplus x = \overline{0 + x} = \overline{x} = x$. Similarly, $x \oplus 0 = x$.
+        \item \textbf{Inverse}: Note that $0 \oplus 0 = \overline{0 + 0} = \overline{0} = 0$, hence 0 is its own inverse. Let $x \in \mathbb{Z}_n$, with $x \neq 0$. $x \in \{1, 2, 3, \cdots n -1\}$ observe that $n-x \in \{1, 2, 3, \cdots n -1\}$ and $x \oplus (n - x) = \overline{x + (n - x)} = \overline{n} = 0$. Similarly, $(n - x) \oplus x = 0$. Therefore, $n - x$ is the inverse of $x$.
+        
+        $\bar{x}$ is the inverse of $\bar{x}$. 
+    \end{enumerate}
+\end{proof}
+\reddate{9/15/2023}
+ \section{Fundemental theories about groups}
+    \subsection{Theorem}
+    If $(G, *)$ is a group, then the identity element is unique.
+    \begin{proof}
+        Suppose that $e$ and $e'$ are both identity elements of $G$. Then $e = e * e' = e'$.
+    \end{proof}
+    \subsection{Theorem}
+    Let $(G, *)$ be a group. If $x$ is any element in G then $x$ has only one inverse.
+    \begin{proof}
+        Suppose that $y_1$ and $y_2$ are both inverses of $x$. Then:
+        \begin{align*}
+            x * y_1 = e = y_1 * x \\
+            x * y_2 = e = y_2 * x \\
+            x * y_1 = x * y_2 \\
+            (y_2 * x) * y_1 = y_2 * (x * y_1) \\
+            y_1 = y_2
+        \end{align*}
+    \end{proof}
+    \subsection*{Notation}
+    Inverse of x will be denoted by $x^{-1}$. In abelian groups, it may be denoted by $-x$.
+    \subsection{Theorem}
+    $(G, *)$ is a group. Then for all $x \in G$, $(x^{-1})^{-1} = x$. 
+    \begin{proof}
+        \begin{align*}
+            x * x^{-1} = e = x^{-1} * x \\
+            (x^{-1})^{-1} * x^{-1} = e = x^{-1} * (x^{-1})^{-1} \\
+            (x^{-1})^{-1} = x
+        \end{align*}
+        Essentially, we are showing that $x^{-1}$ and $x$ both has inverses.
+    \end{proof}
+    \subsection{Theorem}
+    $(G, *)$ is a group. Then for all $x, y \in G$, $(x * y)^{-1} = y^{-1} * x^{-1}$.
+    \begin{proof}
+        \begin{align*}
+            (x * y) * (y^{-1} * x^{-1}) = x * ((y * y^{-1}) * x^{-1})  = x * e * x^{-1} = x * x^{-1} = e \\
+            (y^{-1} * x^{-1}) * (x * y) = y^{-1} * (x^{-1} * x) * y = y^{-1} * e * y = y^{-1} * y = e
+        \end{align*}
+    \end{proof}
+    \subsection{Theorem}
+    Let $x, y \in G$, suppose that $x * y = e$ then, $y = x^{-1}$.
+    \begin{proof}
+        To show $y * x = e$, observe that:
+        \begin{align*}
+            x * y = e \\
+            x^{-1} * (x * y) = x^{-1} * e \\
+            (x^{-1} * x) * y = x^{-1} \\
+            e * y = x^{-1} \\
+            y = x^{-1}
+        \end{align*}
+    \end{proof}
+    \subsection{Theorem: Cancellation law}
+    Let $x, y, z \in G$. 
+    \begin{enumerate}
+        \item If $x * y = x * z$, then $y = z$.
+        \item If $y * x = z * x$, then $y = z$.
+    \end{enumerate}
+    \begin{proof}
+        \hfill
+        \begin{enumerate}
+            \item $x * y = x * z \implies x^{-1} * (x * y) = x^{-1} * (x * z) \implies (x^{-1} * x) * y = (x^{-1} * x) * z \implies e * y = e * z \implies y = z$
+            \item $y * x = z * x \implies (y * x) * x^{-1} = (z * x) * x^{-1} \implies y * (x * x^{-1}) = z * (x * x^{-1}) \implies y * e = z * e \implies y = z$
+        \end{enumerate}
+    \end{proof}
+
+    \reddate{9/17/2023}
+    \section {Cyclic groups}
+    \subsection*{Notation}
+    Powers of x: $x \in G, x^0 = e, x^1 = x, x^2 = x * x, x^3 = x * x * x \dots * x, n \in \mathbb{Z}^+$ \\
+
+    \noindent $x^{-n} = (x^{-1})^n$
+
+    \subsection{Theorem}
+    Let $(G, *)$ be a group and let $x \in G$. Let $\forall m, n \in \mathbb{Z}$, then:
+    \begin{enumerate}[label=(\roman*)]
+        \item $x^m * x^n = x^{m + n}$.
+        \item $(x^n)^{-1} = x^{-n}$.
+        \item $(x^m)^n = x^{mn}$.
+    \end{enumerate}
+    \begin{proof}
+        \hfill
+        \begin{enumerate}[label=(\roman*)]
+            \item Cases: \begin{enumerate}[label=(\arabic*)]
+                \item $m, n \geq 0$: $x^m * x^n = \underbrace{x * x * \dots * x}_{m} * \underbrace{x * x * \dots * x}_{n} = \underbrace{x * x * \dots * x}_{m + n} = x^{m + n}$
+                \item $m,n \in \mathbb{Z}^-, m = -r, n = -s, r, s \in \mathbb{Z}^+$: $x^m * x^n = (x^{-r}) * (x^{-s}) = (x^{-1})^r * (x^{-1})^s = (x^{-1})^{r + s} = x^{-(r + s)} = x^{m + n}$
+                \item $m > 0, n < 0, n = -r, r \in \mathbb{Z}^+$: $x^m * x^n = x^m * x^n = \underbrace{x * x * \dots * x}_{m} * \underbrace{x^{-1} * x^{-1} * \dots * x^{-1}}_{n} = \underbrace{x * x * \dots * x}_{m - n}$\footnote[2]{Try to prove this by reducing it to the first case instead}
+            \end{enumerate}
+            \item $(x^n)^{-1} = (x^{-1})^n = x^{-n}, x^n * x^{-n} = x^0 = e$
+            \item HW.
+        \end{enumerate}
+    \end{proof}
+    \definition{Order}
+    If G is a group and $x \in G$, then G is said to be of \textbf{finite order} if there exists a positive integer n such that $x^n = e$. In this case, the smallest such positive integer n is called the order of x, denoted by $o(x)$. If no such positive integer exists, then x is said to have infinite order and write $o(x) = \infty$.
+    \begin{example}
+        \hfill
+        \begin{enumerate}
+            \item $(\mathbb{Z}_5, \oplus)$ is of finite order: Consider $o(0) = 1, o(1) = 5, o(2) = 5, o(3) = 5, o(4) = 5$.
+            \item $(\mathbb{Z}_5, \oplus)$ is of finite order: Consider $o(0) = 1, o(1) = 4, o(2) = 2, o(3) = 4$.
+        \end{enumerate}
+    \end{example}
+    \subsection{Theorem}
+    If m, n are integeres not both zerom then $\exists x,y \in \mathbb{Z}$ such that $gcd(m, n)=mx+ny$.
+    \subsection*{Definition}
+    a,b are relatively prime if $gcd(a,b)=1$.
+    \subsection{Theorem}
+    If $a, b, c \in \mathbb{Z}$ and $a | bc$ and $gcd(a, b) = 1$, then $a | c$.
+    \begin{proof}
+        $1 = ax + by, x,y \in \mathbb{Z}$, $c = acx + bcy$, so $a | c$.
+    \end{proof}
+    \subsection{Theorem}
+    Let a be a group and $x \in G$:
+    \begin{enumerate}
+        \item $o(x) = o(x^{-1})$
+        \item $o(x) = n$, and $x^m = e$, then $n | m$.
+        \item If $o(x) = n$, and $gcd(m,n) = d$, then $o(x^m) = \frac{n}{d}$. $x^18 = e$, $o(x) = 12$, $gcd(18, 12) = 6$, $o(x^6) = 2$.
+    \end{enumerate}
+
+    \begin{proof}
+        \begin{enumerate}
+            \item\begin{enumerate}
+                \item Suppose that $o(x) = n$, $x^n = e$ \begin{align*}
+                    x^0 = e \\
+                    & \implies x^{n-n} = e \\
+                    & \implies (x^n)(x^{-n}) = e \\
+                    & \implies ex^{-n} = e \\
+                    & \implies x^{-n} = e \\
+                    & \implies (x^{-1})^{n} = e \\
+                    & \text{Assume } m < n, (x^{-1})^m=e \\
+                    & \implies x^{-m} = e \\
+                    & \implies x^m * x^{-m} = x^m \\
+                    & \implies e = x^m \rightarrow \leftarrow 
+                    & \therefore \text{no such m exists} 
+                    \end{align*}
+                    \item $o(x) = \infty$, suppose $o(x^{-1} = n)$. $ (x^{-1}) = e \implies x^{-n} = e \implies x^n x^{-n} = e \implies e = x^n \rightarrow \leftarrow$. X has a finite order, which is a contradiction. Therefore, $o(x^{-1}) = \infty$.
+        
+            \end{enumerate}
+            \item If $o(x) = n$ and $x^m = e$, then $n | m$. $m = nq + r, 0 \leq r < n$. $x^m = x^{nq + r} = (x^n)^q x^r = e^q x^r = x^r = e$. Since $o(x) = n$, $r = 0$. Therefore, $n | m$.
+            \item Consider $(x^m)^{\frac{n}{d}} = x^{\frac{mn}{d}} = (x^n)^{\frac{m}{d}} = e^{\frac{m}{d}} = e$.  Let $(x^m)^k = e \implies x^{mk} = e \implies n | mk$. But $\frac{n}{d}$ divides $\frac{m}{d}k$. Also, $gcd(\frac{n}{d}, \frac{m}{d}) = 1$. Therefore, $\frac{n}{d} | k$. Therefore, $o(x^m) = \frac{n}{d}$.
+        \end{enumerate}
+        \definition{Cyclic, Generator}
+        A group G is cyclic if $\exists$ G such that $G = \{x^n | n \in \mathbb{Z}\}$.\ x is called a generator of G.
+        \subsection*{Notes}
+        Cyclic groups are always countable.
+        \subsection*{Notation}
+        If G is a cyclic group with generator x, then $G = \langle x \rangle$.
+        \subsection{Theorem}
+        If $G = <x>$. If $o(x) = \infty$, then $x^j \neq x^k$ if $j \neq k$. If $o(x) = n$, then $x^j = x^k$ if and only if $j \equiv k \pmod{n}$.
+        \subsection{Theorem} 
+        If $G = <x>$, then G is abelian: $\forall a,b, ab= ba$.
+        \begin{proof}
+            $a = x^j, b = x^k, ab = x^j x^k = x^{j + k} = x^{k + j} = x^k x^j = ba$.
+        \end{proof}
+        \section{Subgroups}
+        \subsection*{Example}
+         $G = (\mathbb{R}, +)$ is a group. The subgroups of $G$ are $\{0\}$, $(\mathbb{Z}, +)$, $(n\mathbb{Z}, +)$, $\mathbb{R}$, etc.
+        \subsection*{Definition: Subgroups}
+        A subset $H$ of a group $(G,*)$ is a group under the operation $*$ if the elements of $H$ forms a group under $*$. In this case, we say that $H$ is a subgroup of $G$ and write $H \subseteq G$.
+        \subsection*{Notes}
+        \begin{enumerate}
+            \item Identity of H is the same as that of G. (\begin{proof}
+                $e_H$ is the identity of H. $e_H^{-1} e_H e_H = e_H ^ {-1} e_H, e_H = e.$
+            \end{proof})
+            \item Let $a \in H$, let $a {a_{H}}^{-1} = e_H = e$, so $a^{-1}_H = a^{-1}$.
+        \end{enumerate}
+        \subsection{Theorem}
+        Let $H$ be a non-empty subset of a group G. Then $H$ is a subgroup of $G$ if and only if: 
+        \begin{enumerate}
+            \item $\forall a, b \in H, ab \in H$. (Closure)
+            \item $\forall a \in H, a^{-1} \in H$. (Closure under inverse)
+        \end{enumerate}
+        \begin{example}
+            $GL(2, \mathbb{R})$ has some subgroups:
+            \begin{enumerate}
+                \item $GL(2, \mathbb{R})$ (itself)
+                \item $O(2, \mathbb{R})$
+                \item $SL(2, \mathbb{R})$
+            \end{enumerate}
+        \end{example}
+        \subsection{Theorem}
+        Every subgroups of a cyclic group is cyclic.
+        \begin{proof}
+            Let $G = <x>$, $H \subseteq G$. Assume $H \neq \{e\}$. Let n be the smallest positive integer such that $x^n \in H$. Claim: $H = x^n$. Let $h \in H$. Then $h = x^m$ for some $m \in \mathbb{Z}$. We have $m = qn + r$. $0 \leq r < n$. $h = x^m = x^{qn + r} = (x^n)^q x^r = x^r \in H$. Since $n$ is the smallest positive integer such that $x^n \in H$, $r = 0$. Therefore, $h = x^m = x^{qn} = (x^n)^q \in x^n$. Therefore, $H \subseteq x^n$. Since $x^n \in H$, $x^n \subseteq H$. Therefore, $H = x^n$.
+        \end{proof}
+        % \subsection{Example}
+        % % insert a table 4 x 4 with column and row numbers e,a,b,c:
+        % \begin{table}[h!]
+        %     \centering
+        %     \begin{tabular}{c|c|c|c|c}
+        %         & e & a & b & c \\
+        %         \hline
+        %         e & e & a & b & c \\
+        %         \hline
+        %         a & a & b & c & e \\
+        %         \hline
+        %         b & b & c & e & a \\
+        %         \hline
+        %         c & c & e & a & b \\
+        %     \end{tabular}
+        %     \caption{Cyclic group of order 4}
+        %     \label{tab:my_label}
+        % \end{table}
+        
+    \end{proof}
+    \subsection*{Example: Center group}
+    Center of a group G, $Z(G) = \{z \in G | zg = gz, \forall g \in G\}$. $Z(G)$ is a subgroup of G.
+    \begin{proof}
+        \hfill
+        \begin{enumerate}
+            \item $e \in Z(G)$ because $eg = ge, \forall g \in G$.
+            \item Let $x, y \in Z(G)$. Then $xg = gx, yg = gy, \forall g \in G$. Then $xyg = x(yg) = x(gy) = xgy = (gx)y = yxg, \forall g \in G$. Therefore, $xy \in Z(G)$.
+            \item Let $x \in Z(G)$. Then $xg = gx, \forall g \in G$. Then $x^{-1}g = gx^{-1} = gx^{-1}, \forall g \in G$. Therefore, $x^{-1} \in Z(G)$.
+        \end{enumerate}
+    \end{proof}
+    \subsection*{Example: Centralizer}
+    Centralizer of $g \in G$, $Z(g) = \{z \in G | za = az\}$. $Z(g)$ is a subgroup of G.
+
+    Note: If G is abelian, then $Z(G) = G$.
+
+    Note: $\bigcap_{g \in G} Z(g) = Z(G)$. (Prove this!)
+    \subsection{Theorem}
+
+    \subsection{Theorem}
+    $H, K$ are subgroups of G. 
+    \begin{enumerate}
+        \item $H \cap K$ is a subgroup of G.
+        \item $H \cup K = H$, $H \not\subset K, K \subseteq H$. 
+    \end{enumerate}
+    \section{Direct Products}
+    $(G, /cdot), (H, *)$ are groups. Define a binary operation on $G \times H$ by $(g_1, h_1) \cdot (g_2, h_2) = (g_1 \cdot g_2, h_1 * h_2)$. Then $(G \times H, \cdot)$ is a group.
+
+    Identity: $(e_G, e_H)$
+
+    Inverse: $(g, h)^{-1} = (g^{-1}, h^{-1})$
+
+
+    \subsection{Note}
+    $qcd(a,b) \cdot lcm(a,b) = ab$.
+    \subsection{Theorem}
+    Let $G$ = $G_1 \times G_2$.
+    \begin{enumerate}
+        \item If $g_1 \in G_1$ and $g_2 \in G_2$, with $o(g_1)$ and $o(g_2)$ are finite, then $o((g_1, g_2)) = lcm(o(g_1), o(g_2))$. \begin{proof}
+            Suppose $(g_1, g_2)^n = (g_1^n, g_2^n) = (e_1, e_2)$. Then, $n$ is a common multiple of $o(g_1)$ and $o(g_2)$. Hence the order of $g_1$ and $g_2$ is the least common multiple of $o(g_1)$ and $o(g_2)$.
+        \end{proof}
+        \item If $G_1$ and $G_2$ are cyclic groups of order $m$ and $n$ respectively, then $G$ is a cyclic group of order $mn$. \begin{proof} ($\implies$)
+        \end{proof}
+        
+        Assume G is cyclic. Let g be a generator of G. Then $g = (g_1, g_2)$ for some $g_1 \in G_1$ and $g_2 \in G_2$. So $G_1 = \langle g_1 \rangle$ and $G_2 = \langle g_2 \rangle$. \\ $o(g) = |G_1| |G_2| = lcm(|G_1|, |G_2|)*gcd(|G_1|, |G_2|). \\ | G_1 \times G_2 | = lcm(|G_1|, |G_2|) \implies gcd(|G_1|, |G_2|) = 1$. \\ ($\impliedby$) Let $G_1$ and $G_2$ be cyclcic and are relatively prime. To prove: $G_1 \times G_2 = G$ is cyclic. \\ $|G_1| |G_2| =lcm(|G_1|, |G_2|)*gcd(|G_1|, |G_2|)$ \\ $o(g_1,g_2) = lcm(o(g_1), o(g_2)) \implies g = (g_1, g_2)$. (Not sure if I understand this proof, might need to re-formulate it)
+    \end{enumerate}
