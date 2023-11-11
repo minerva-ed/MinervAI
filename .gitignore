@@ -1,2 +1,4 @@
 API/env
 API/.env
+
+.DS_Store
