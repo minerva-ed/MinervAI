@@ -23,7 +23,7 @@ class StudentAgent:
 async def main():
     input_doc = ["Groups", "Rings", "Fields"]
     for section in input_doc:
-        var context = kernel.CreateNewContext(input_doc)
+        context = kernel.CreateNewContext(input_doc)
         lecture = LectureAgent.give_lecture(context)
         print(lecture)
 
