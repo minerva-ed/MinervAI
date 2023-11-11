@@ -15,6 +15,10 @@ api_key, org_id = sk.openai_settings_from_dot_env()
 kernel.add_chat_service("chat-gpt", OpenAIChatCompletion("gpt-3.5-turbo", api_key, org_id))
 
 
+def readLectureNotes():
+    pass
+
+
 
 # Define prompts
 class ProfessorAgent:
@@ -26,23 +30,24 @@ class ProfessorAgent:
         self.lecture_notes = notes
 
     async def answer_question(self, question):
-        return kernel.create_semantic_function(f"""Provide a detailed answer to the following question in the context of {self.expertise_area}: {question}""")()
+        return kernel.create_semantic_function(f"""Provide a detailed answer to the following question in the context of {self.expertise_area} and {self.lecture_notes}: {question}""")()
 
     async def give_lecture(self, topic):
         if self.lecture_notes:
             # Incorporating lecture notes into the lecture generation
-            return kernel.create_semantic_function(f"""Give a detailed lecture on {topic} related to {self.expertise_area}, using the following notes: {self.lecture_notes}.""", max_tokens=200)()
+            return kernel.create_semantic_function(f"""Give a detailed lecture on {topic} related to {self.expertise_area}, using the following notes: {self.lecture_notes}.""", max_tokens=250)()
         else:
             # Default lecture generation without notes
             return kernel.create_semantic_function(f"""Give a detailed lecture on {topic} related to {self.expertise_area}.""", max_tokens=150)()
 
 class StudentAgent:
-    def __init__(self, knowledge_level, personality_type):
-        self.knowledge_level = knowledge_level
-        self.personality_type = personality_type
+    def __init__(self, retention_rate, personality_type, educational_background):
+        self.retention_rate = retention_rate # 10%, 30%, 70%, 90%
+        self.personality_type = personality_type # Introverted, Extroverted
+        self.educational_background = educational_background # Liberal Arts, Engineering, Pure Researcher
 
     async def generate_questions(self, lecture_content):
-        return kernel.create_semantic_function(f"""Given your knowledge level of {self.knowledge_level} and personality type {self.personality_type}, state one question you have about this lecture: {lecture_content}:""")()
+        return kernel.create_semantic_function(f"""Given your retention rate of {self.retention_rate}, your educational background of {self.educational_background} and personality type of {self.personality_type} as a student learning from this lecture, state one specific question you have about this lecture: {lecture_content}:""")()
 
     async def discuss_with_peer(self, peer, lecture_content):
         # This function simulates discussion between two students
@@ -53,13 +58,13 @@ async def simulate_classroom():
 
     # Create Professor and Student Agents
     professor = ProfessorAgent("Mathematics")
-    students = [StudentAgent("partial", "introverted"), StudentAgent("partial", "extroverted")]
+    students = [StudentAgent("10%", "extroverted", "liberal arts"), StudentAgent("90%", "introverted", "engineering"), StudentAgent("70%", "introverted", "Pure researcher")]
 
     # Example: Upload lecture notes
     professor.upload_lecture_notes("Here are some key points and concepts about Groups, Rings, and Fields...")
 
     # Simulate classroom interaction
-    lecture_topic = "Groups, Rings, Fields"
+    lecture_topic = "Groups, Rings and Fields"
     lecture_content = await professor.give_lecture(lecture_topic)
     print(lecture_content)
     for student in students:
