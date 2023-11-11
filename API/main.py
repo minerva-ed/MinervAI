@@ -21,6 +21,9 @@ class ProfessorAgent:
     def upload_lecture_notes(self, notes):
         self.lecture_notes = notes
 
+    async def answer_question(self, question):
+        return kernel.create_semantic_function(f"""Provide a detailed answer to the following question in the context of {self.expertise_area}: {{$INPUT}}""")(question)
+
     async def give_lecture(self, topic):
         if self.lecture_notes:
             # Incorporating lecture notes into the lecture generation
