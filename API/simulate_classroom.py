@@ -6,6 +6,8 @@
 import semantic_kernel as sk
 from semantic_kernel.connectors.ai.open_ai import OpenAIChatCompletion
 from semantic_kernel import PromptTemplateConfig, PromptTemplate, SemanticFunctionConfig
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import random
 
 
@@ -13,8 +15,11 @@ import random
 api_key, org_id = sk.openai_settings_from_dot_env()
 
 
-def readLectureNotes():
-    pass
+# Cosine Similarity Function
+def calculate_cosine_similarity(text1, text2):
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([text1, text2])
+    return cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])[0][0]
 
 
 # Load x lines from a file
@@ -74,7 +79,7 @@ class StudentAgent:
                 new_lecture_content += line + ".\n"
         lecture_content = new_lecture_content
 
-        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that your retention rate of {self.retention_rate}, you are a student with educational background of {self.educational_background} and personality type of {self.personality_type} . Pretend to be the student described above learning from this lecture, state one claridying question you have about this lecture, and do not state anything other than the question. If you have a good understading already, you can not asking questions, and respond by saying -1""",max_tokens=120,temperature=0.5)()
+        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that your retention rate of {self.retention_rate}, you are a student with educational background of {self.educational_background} and personality type of {self.personality_type} . Pretend to be the student described above learning from this lecture, state one clarifying question you have about this lecture, and do not state anything other than the question. If you have a good understading already, you can not asking questions, and respond by saying -1""",max_tokens=120,temperature=0.5)()
 
     async def discuss_with_peer(self, peer, lecture_content):
         # This function simulates discussion between two students
@@ -97,10 +102,23 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
     print("Question + Answer pairs: ")
     for student in students:
         question = await student.generate_questions(lecture_content.result)
+        should_ask = True
+        for index, [old_question, old_answer, counter] in enumerate(final_array):
+            similarity_threshold = 0.75  # Adjust the threshold as needed
+            if calculate_cosine_similarity(old_question, question) > similarity_threshold:
+                should_ask = False
+                final_array[index][2]+=1
+                break
+
+        if not should_ask:
+            continue
+
         answer = await professor.answer_question(question.result)
-        final_array.append((question.result, answer.result))
+        final_array.append([question.result, answer.result, 1])
         print("Question: ", question.result)
         print("Answer: ", answer.result)
+
+    print(final_array)
     return {"lecture": lecture_content.result, "qa_array": final_array}
     # Log the interaction for analysis
     # save_to_report(final_array)
@@ -110,6 +128,7 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
     #     for j in range(i + 1, len(students)):
     #         await students[i].discuss_with_peer(students[j], lecture_content)
             # Log the interaction for analysis
+
 
 # Run the main function
 if __name__ == "__main__":
