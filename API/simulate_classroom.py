@@ -60,9 +60,9 @@ class ProfessorAgent:
             return self.kernel.create_semantic_function(f"""Give a detailed lecture related to {self.expertise_area}.""")()
 
 class StudentAgent:
-    def __init__(self, retention_rate, personality_type, educational_background):
+    def __init__(self, retention_rate, question_rate, educational_background):
         self.retention_rate = retention_rate # 0.1, 0.2, 0.8
-        self.personality_type = personality_type # Introverted, Extroverted
+        self.question_rate = question_rate # 0.1, 0.2, 0.8
         self.educational_background = educational_background # Liberal Arts, Engineering, Pure Researcher
         
         #initialize kernel
@@ -79,7 +79,7 @@ class StudentAgent:
                 new_lecture_content += line + ".\n"
         lecture_content = new_lecture_content
 
-        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that you are a student with educational background of {self.educational_background} and personality type of {self.personality_type} . Pretend to be the student described above learning from this lecture, state one clarifying question you have about this lecture, and do not state anything other than the question. If you have a good understading already, you can not asking questions, and respond by saying -1""",max_tokens=120,temperature=0.5)()
+        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that you are a student with educational background of {self.educational_background}, and have likelihood to ask question of {self.question_rate}. Pretend to be the student described above learning from this lecture, state one clarifying question you have about this lecture, and do not state anything other than the question. If you do not want to ask a question respond by saying -1""",max_tokens=120,temperature=0.5)()
 
     async def discuss_with_peer(self, peer, lecture_content):
         # This function simulates discussion between two students
@@ -93,56 +93,45 @@ class GeneralAgent:
     async def generate_summary(self, qa_map):
         return self.kernel.create_semantic_function(f"""Give a detailed summary of overall and student wise analysis of types, kinds and frequencies of questions asked as per the data in the following map containing questions, answers, and students who asked the questions: {qa_map}.""")()
 
-
-# Main simulation function
-async def simulate_classroom(content=load("lecture-notes.txt")):
-
-    # Create Professor and Student Agents
-    professor = ProfessorAgent("Mathematics")
-    students = [StudentAgent(0.5, "extroverted", "really dumb liberal arts students studying anthropology"), 
-                StudentAgent(0.8, "introverted", "engineering"),
-                StudentAgent(0.95, "extroverted", "research in math"),
-                StudentAgent(0.7, "introverted", "physics"),
-                StudentAgent(0.2, "introverted", "art history"),
-                StudentAgent(0.3, "extroverted", "political science"),
-                StudentAgent(0.8, "introverted", "engineering"),
-                StudentAgent(0.8, "extroverted", "research in statistics")]
-    # Example: Upload lecture notes
-    professor.upload_lecture_notes(f"""Here are some key points and concepts about Groups, Rings, and Fields in LateX: { content }""")
+'''
+Returns a Json Object 
+'''
+async def simulate_lecture(lecture, lecture_index, professor, students):
+    professor.upload_lecture_notes(f"""Here are some key points and concepts about Groups, Rings, and Fields from lecture {lecture_index + 1} in LateX: {lecture}""")
 
     # Simulate classroom interaction
     lecture_content = await professor.give_lecture()
-    #print(lecture_content)
-    final_array = []
-    #print("Question + Answer pairs: ")
+    # print(lecture_content)
+    question_answer_array = []
+    # print("Question + Answer pairs: ")
     for student_index, student in enumerate(students):
         question = await student.generate_questions(lecture_content.result)
         if question.result == "-1":
             continue
-            
+
         should_ask = True
-        for index, [old_question, old_answer, associated_students_list] in enumerate(final_array):
+        for index, [old_question, old_answer, associated_students_list] in enumerate(question_answer_array):
             similarity_threshold = 0.75  # Adjust the threshold as needed
             if calculate_cosine_similarity(old_question, question.result) > similarity_threshold:
                 should_ask = False
-                final_array[index][2].append(student_index)
+                question_answer_array[index][2].append(student_index)
                 break
 
         if not should_ask:
             continue
 
         answer = await professor.answer_question(question.result)
-        final_array.append([question.result, answer.result, [student_index]])
-        #print("Question: ", question.result)
-        #print("Answer: ", answer.result)
-    
-    print(len(final_array))
-    for index, [question, answer, associated_students_list] in enumerate(final_array):
-        print(f"""Index: {index}, Student {associated_students_list}""")
-    
+        question_answer_array.append([question.result, answer.result, [student_index]])
+        # print("Question: ", question.result)
+        # print("Answer: ", answer.result)
+
+    # print(len(question_answer_array))
+    # for index, [question, answer, associated_students_list] in enumerate(question_answer_array):
+    #     print(f"""Index: {index}, Student {associated_students_list}""")
+    #
     # Modify the final Q-A map output structure
     qa_map_output = []
-    for question, answer, associated_students_list in final_array:
+    for question, answer, associated_students_list in question_answer_array:
         q_a_pair = {
             "question": question,
             "answer": answer,
@@ -150,12 +139,44 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
         }
         qa_map_output.append(q_a_pair)
 
+    lecture_Json = {
+        "lecture": lecture_content.result,
+        "QnA": qa_map_output
+    }
+    return lecture_Json
+
+
+async def runQuiz():
+
+
+# Main simulation function
+async def simulate_classroom(content=load("lecture-notes.txt")):
+
+    # Create Professor and Student Agents
+    professor = ProfessorAgent("Mathematics")
+    students = [StudentAgent(0.5, 0.7, "really smart liberal arts students studying anthropology"),
+                StudentAgent(0.8, 0.3, "engineering"),
+                StudentAgent(0.95, 0.95, "research in math"),
+                StudentAgent(0.7, 0.3, "physics"),
+                StudentAgent(0.2, 0.2, "art history"),
+                StudentAgent(0.3, 0.4, "political science"),
+                StudentAgent(0.8, 0.5, "engineering"),
+                StudentAgent(0.8, 0.99, "research in statistics")]
+
+    splitOnSignQuizzes = "=========="
+    lecturesString, quizzes = content.split(splitOnSign)
+
+    splitOnSignLectures = "----------"
+    lectures = lecturesString.split(splitOnSignLectures)
+    lecture_json_list = []
+    for lectureIndex, lecture in enumerate(lectures):
+        lecture_json_list.append(await simulate_lecture(lecture, lectureIndex, professor, students))
+
     general_agent = GeneralAgent()
-    summary = await general_agent.generate_summary(qa_map_output)
+    summary = await general_agent.generate_summary(lecture_json_list)
     # Add lecture content and summary
     result_json = {
-        "lecture": lecture_content.result,
-        "questions": qa_map_output,
+        "lectures": lecture_json_list,
         "summary": summary.result  # Replace with an actual summary if available
     }
     print(result_json)
