@@ -52,7 +52,7 @@ class ProfessorAgent:
     async def give_lecture(self):
         if self.lecture_notes:
             # Incorporating lecture notes into the lecture generation
-            return self.kernel.create_semantic_function(f"""Give a transcript of a detailed lecture (just the first 5 minutes (around 250 words)), using the following notes in LaTeX, with approporiate fillers to make the lecture engaging: {self.lecture_notes}.""", max_tokens=1024)()
+            return self.kernel.create_semantic_function(f"""Give a transcript of a detailed lecture (just the first 5 minutes (around 250 words)), using the following notes in LaTeX, with approporiate fillers to make the lecture engaging: {self.lecture_notes}. MAKE SURE THAT WHEN YOU ARE using math expressions, use $$math$$ notation and not $$math$$.""", max_tokens=1024)()
         else:
             throw("No lecture notes uploaded")
 
