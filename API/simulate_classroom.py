@@ -9,6 +9,9 @@ from semantic_kernel import PromptTemplateConfig, PromptTemplate, SemanticFuncti
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import random
+import time
+
+
 
 
 # Prepare OpenAI service using credentials stored in the `.env` file
@@ -103,8 +106,13 @@ async def simulate_lecture(lecture, lecture_index, professor, students):
     question_answer_array = []
     # print("Question + Answer pairs: ")
 
-    for student_index, student in enumerate(students):
-        question = await student.generate_questions(lecture_content.result)
+    #Call the generate_questions on all students concurrently
+    coroutines = [student.generate_questions(lecture_content.result) for student in students]
+    all_questions = await asyncio.gather(*coroutines)
+
+    prof_coroutines = []
+
+    for student_index, question in enumerate(all_questions):
         print(question.result)
         if question.result == "-1":
             continue
@@ -120,10 +128,13 @@ async def simulate_lecture(lecture, lecture_index, professor, students):
         if not should_ask:
             continue
 
-        answer = await professor.answer_question(question.result)
-        question_answer_array.append([question.result, answer.result, [student_index]])
-        # print("Question: ", question.result)
-        # print("Answer: ", answer.result)
+        prof_coroutines.append(professor.answer_question(question.result))
+        question_answer_array.append([question.result, "PLACEHOLDER", [student_index]])
+
+    #run all prof answers
+    prof_answers = await asyncio.gather(*prof_coroutines)
+    for index in range(len(question_answer_array)):
+        question_answer_array[index][1] = prof_answers[index].result
 
     # print(len(question_answer_array))
     # for index, [question, answer, associated_students_list] in enumerate(question_answer_array):
@@ -149,6 +160,9 @@ async def simulate_lecture(lecture, lecture_index, professor, students):
 
 # Main simulation function
 async def simulate_classroom(content=load("sample.txt")):
+    # Record start time
+    start_time = time.time()
+
 
     # Create Professor and Student Agents
     professor = ProfessorAgent()
@@ -183,6 +197,15 @@ async def simulate_classroom(content=load("sample.txt")):
         "summary": summary.result  # Replace with an actual summary if available
     }
     print(result_json)
+
+    # Record end time
+    end_time = time.time()
+
+    # Calculate elapsed time
+    elapsed_time = end_time - start_time
+
+    print(f"Elapsed time: {elapsed_time} seconds")
+    
     return result_json
 
 
