@@ -23,15 +23,14 @@ def calculate_cosine_similarity(text1, text2):
 
 
 # Load x lines from a file
-def load(filename, lines_to_read = 50):
+def load(filename):
     lines = []
     with open(filename, 'r') as file:
-        for _ in range(lines_to_read):
+        while True:
             line = file.readline()
             if not line:
                 break
             lines.append(line.strip())
-
     return '\n'.join(lines)
 
 
@@ -146,8 +145,6 @@ async def simulate_lecture(lecture, lecture_index, professor, students):
     }
     return lecture_Json
 
-
-async def runQuiz():
 
 
 # Main simulation function
