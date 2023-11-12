@@ -26,16 +26,15 @@ export default function FileUploader() {
         formData.append('file', file);
         formData.append('student_count', studentCount.toString());
 
-        /*
-        const res = await fetch('https://api.cloudinary.com/v1_1/colbycloud-examples/image/upload', {
+        const res = await fetch('http://127.0.0.1:8000/upload', {
             method: 'POST',
             body: formData
-        })
+        });
 
         const data = await res.json();
-        */
 
-        router.push(`/results/${8901234}`);
+        console.log(data['task_id']);
+        router.push(`/results/${data['task_id']}`);
     }
 
     const onDrop = useCallback((acceptedFiles: Array<File>) => {
