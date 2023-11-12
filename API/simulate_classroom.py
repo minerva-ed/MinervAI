@@ -54,10 +54,10 @@ class ProfessorAgent:
     async def give_lecture(self):
         if self.lecture_notes:
             # Incorporating lecture notes into the lecture generation
-            return self.kernel.create_semantic_function(f"""Give a detailed lecture on related to {self.expertise_area}, using the following notes: {self.lecture_notes}.""")()
+            return self.kernel.create_semantic_function(f"""Give a detailed lecture on related to {self.expertise_area}, using the following notes in LaTeX: {self.lecture_notes}.""")()
         else:
             # Default lecture generation without notes
-            return self.kernel.create_semantic_function(f"""Give a detailed lecture on {topic} related to {self.expertise_area}.""")()
+            return self.kernel.create_semantic_function(f"""Give a detailed lecture related to {self.expertise_area}.""")()
 
 class StudentAgent:
     def __init__(self, retention_rate, personality_type, educational_background):
@@ -106,30 +106,30 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
     print(lecture_content)
     final_array = []
     print("Question + Answer pairs: ")
-    for student in students:
+    for student_index, student in enumerate(students):
         question = await student.generate_questions(lecture_content.result)
         if question.result == "-1":
             continue
             
         should_ask = True
-        for index, [old_question, old_answer, counter] in enumerate(final_array):
+        for index, [old_question, old_answer, associated_students_list] in enumerate(final_array):
             similarity_threshold = 0.75  # Adjust the threshold as needed
             if calculate_cosine_similarity(old_question, question.result) > similarity_threshold:
                 should_ask = False
-                final_array[index][2]+=1
+                final_array[index][2].append(student_index)
                 break
 
         if not should_ask:
             continue
 
         answer = await professor.answer_question(question.result)
-        final_array.append([question.result, answer.result, 1])
+        final_array.append([question.result, answer.result, [student_index]])
         print("Question: ", question.result)
         print("Answer: ", answer.result)
     
     print(len(final_array))
-    for index, [question, answer, counter] in enumerate(final_array):
-        print(f"""Index: {index}  Counter {counter}""")
+    for index, [question, answer, associated_students_list] in enumerate(final_array):
+        print(f"""Index: {index}, Student {associated_students_list}""")
     return {"lecture": lecture_content.result, "qa_array": final_array}
     # Log the interaction for analysis
     # save_to_report(final_array)
