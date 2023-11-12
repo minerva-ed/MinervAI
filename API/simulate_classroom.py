@@ -39,8 +39,7 @@ def load(filename, lines_to_read = 50):
 
 # Define prompts
 class ProfessorAgent:
-    def __init__(self, expertise_area):
-        self.expertise_area = expertise_area
+    def __init__(self):
         self.lecture_notes = None
         self.kernel = sk.Kernel()
         self.kernel.add_chat_service("chat-gpt", OpenAIChatCompletion("gpt-3.5-turbo-16k", api_key, org_id))
@@ -49,15 +48,14 @@ class ProfessorAgent:
         self.lecture_notes = notes
 
     async def answer_question(self, question):
-        return self.kernel.create_semantic_function(f"""Provide a detailed answer to the following question in the context of {self.expertise_area} and {self.lecture_notes}: {question}""", temperature=0.8)()
+        return self.kernel.create_semantic_function(f"""Provide a detailed answer to the following question received after the following lecture {self.lecture_notes}: {question}? Answer concisely.""", temperature=0.8)()
 
     async def give_lecture(self):
         if self.lecture_notes:
             # Incorporating lecture notes into the lecture generation
-            return self.kernel.create_semantic_function(f"""Give a detailed lecture on related to {self.expertise_area}, using the following notes in LaTeX: {self.lecture_notes}.""")()
+            return self.kernel.create_semantic_function(f"""Give a transcript of a detailed lecture (just the first 5 minutes (around 250 words)), using the following notes in LaTeX, with approporiate fillers to make the lecture engaging: {self.lecture_notes}.""", max_tokens=1024)()
         else:
-            # Default lecture generation without notes
-            return self.kernel.create_semantic_function(f"""Give a detailed lecture related to {self.expertise_area}.""")()
+            throw("No lecture notes uploaded")
 
 class StudentAgent:
     def __init__(self, retention_rate, question_rate, educational_background):
@@ -79,6 +77,7 @@ class StudentAgent:
                 new_lecture_content += line + ".\n"
         lecture_content = new_lecture_content
 
+
         return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that you are a student with educational background of {self.educational_background}, and have likelihood to ask question of {self.question_rate}. Pretend to be the student described above learning from this lecture, state one clarifying question you have about this lecture, and do not state anything other than the question. If you do not want to ask a question respond by saying -1""",max_tokens=120,temperature=0.5)()
 
     async def discuss_with_peer(self, peer, lecture_content):
@@ -97,15 +96,17 @@ class GeneralAgent:
 Returns a Json Object 
 '''
 async def simulate_lecture(lecture, lecture_index, professor, students):
-    professor.upload_lecture_notes(f"""Here are some key points and concepts about Groups, Rings, and Fields from lecture {lecture_index + 1} in LateX: {lecture}""")
+    professor.upload_lecture_notes(f"""Here are some key points and concepts from lecture {lecture_index + 1} in LateX: {lecture}""")
 
     # Simulate classroom interaction
     lecture_content = await professor.give_lecture()
     # print(lecture_content)
     question_answer_array = []
     # print("Question + Answer pairs: ")
+
     for student_index, student in enumerate(students):
         question = await student.generate_questions(lecture_content.result)
+        print(question.result)
         if question.result == "-1":
             continue
 

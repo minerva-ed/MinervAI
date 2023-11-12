@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 
 interface ClassroomProps {
     task_id: string;
@@ -33,17 +32,37 @@ export default function Classroom({ task_id }: ClassroomProps) {
         return () => ws.close();
     }, [task_id]);
 
+    if (!taskResult) {
+        // Render a message or return null to render nothing
+        return <p className="text-center text-gray-700">No data available.</p>;
+    }
+
     return (
-        <div className="flex flex-col items-center justify-center p-4">
-            {error && <p className="text-red-500 text-xl">{error}</p>}
-            {taskResult ? (
-                <div className="text-indigo-700 text-lg">
-                    <p>Task Result:</p>
-                    <pre className="bg-indigo-100 p-2 rounded">{JSON.stringify(taskResult, null, 2)}</pre>
-                </div>
-            ) : (
-                <p className="text-indigo-700 text-lg">Waiting for task result...</p>
-            )}
+        <div className="max-w-4xl mx-auto p-4">
+            {/* Display lecture notes */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 className="text-xl font-bold mb-2">Lecture Notes</h2>
+                <p>{taskResult.lecture}</p>
+            </div>
+
+            {/* Display questions and answers */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 className="text-xl font-bold mb-2">Questions and Answers</h2>
+                {taskResult.questions.map((item, index) => (
+                    <div key={index} className="mb-4">
+                        <h3 className="font-semibold">Question {index + 1}: {item.question}</h3>
+                        <p className="text-gray-700">Answer: {item.answer}</p>
+                        <p className="text-sm text-gray-600">Associated Students: {item.associated_students_list.join(', ')}</p>
+                    </div>
+                ))}
+            </div>
+
+            {/* Display summary */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <h2 className="text-xl font-bold mb-2">Summary</h2>
+                <p>{taskResult.summary}</p>
+            </div>
         </div>
+
     );
 }

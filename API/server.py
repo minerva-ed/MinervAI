@@ -44,6 +44,7 @@ async def websocket_endpoint(websocket: WebSocket, task_id: str):
     await websocket.accept()
     try:
         task = tasks.get(task_id)
+        print("this is our task:")
         if not task:
             await websocket.send_text("Task not found")
             return
