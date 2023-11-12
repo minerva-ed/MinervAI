@@ -26,7 +26,7 @@ export default function RootLayout({
           </header>
           {children}
         </main>
-        <footer className="absolute bottom-0 right-0 p-4 font-mono text-neutral-600">© 2023 MinervAI</footer>
+        <footer className="text-center p-4 font-mono text-neutral-600">© 2023 MinervAI</footer>
       </body>
     </html>
   );

@@ -10,7 +10,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import random
 import time
-
+import asyncio
 
 
 
@@ -211,5 +211,4 @@ async def simulate_classroom(content=load("sample.txt")):
 
 # Run the main function
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(simulate_classroom())
