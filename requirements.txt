@@ -1,4 +1,4 @@
-semantickernel
+semantic-kernel
 openai
 pyautogen
 fastapi
