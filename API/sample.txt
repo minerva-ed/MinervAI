@@ -1,0 +1,43 @@
+\section{Binary operation}
+\subsection*{Definition: Binary operation}
+If $S$ is a set, then a binary operation $*$ on $S$ is a function, that associates to each ordered pair ($s_1, s_2$) of elements in s, an element of S, which is denoted by $s_1 * s_2$.
+
+Note: order matters.
+
+\example
+\begin{enumerate}
+    \item $(\mathbb{Z}, +)$ is a binary operation.
+    \item $(\mathbb{Z}, \cdot)$ is a binary operation.
+    \item $(\mathbb{Z}, \textbf{divide})$ is not a binary operation.
+\end{enumerate}
+\definition{Commutative}
+$s_1 * s_2 \neq s_2 * s_1$ for some $s_1, s_2 \in S$. Then $*$ is called a non-commutative binary operation.
+\definition{Associative}
+It is associative if $(s_1 * s_2) * s_3 = s_1 * (s_2 * s_3)$ for all $s_1, s_2, s_3 \in S$.
+
+\subsection*{Examples}
+\begin{enumerate}
+    \item $(\mathbb{Z}, -)$ is not associative nor commutative
+    \item Define $M_{2,2} = 2 x 2$ matrices with real entries. Then $(M_{2,2}, +)$ is associative and commutative.
+    \item But $(M_{2,2}, \cdot)$ is not commutative but is associative. Because think of matrix multiplication as composition of linear transformations, which is associative but not commutative.
+\end{enumerate}
+\section{Groups}
+\subsection*{Definition: Group}
+Suppose that 
+\begin{enumerate}
+    \item $G$ is a set and $*$ is a binary operation on $G$.
+    \item $*$ is associative. 
+    \item There exists an element $e \in G$ such that $x * e = e * x = x$ for all $x \in G$. 
+    \item For each $x \in G$, there exists an element $y \in G$ such that $x * y = y * x = e$. 
+\end{enumerate}
+Then $G$ is called a group and $*$ is called a group operation on $G$.
+\subsection*{Notes}
+\begin{enumerate}
+    \item $G$ is nonempty as there requires to be an identity element.
+    \item $e$ is called the identity element of G. ($e$ will be proven to be unique)
+    \item $y$ is called the\footnote[1]{The uniqueness of the inverse will be proven in future lectures} inverse of $x$ and is denoted by $x^{-1}$. This goes both ways for $x$ and $y$ as axiom 3 is symmetric.
+\end{enumerate}
+
+==========
+
+No Quiz Today.

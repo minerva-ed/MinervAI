@@ -355,3 +355,7 @@ $(\mathbb{Z}_n, \oplus)$ is a group.
         
         Assume G is cyclic. Let g be a generator of G. Then $g = (g_1, g_2)$ for some $g_1 \in G_1$ and $g_2 \in G_2$. So $G_1 = \langle g_1 \rangle$ and $G_2 = \langle g_2 \rangle$. \\ $o(g) = |G_1| |G_2| = lcm(|G_1|, |G_2|)*gcd(|G_1|, |G_2|). \\ | G_1 \times G_2 | = lcm(|G_1|, |G_2|) \implies gcd(|G_1|, |G_2|) = 1$. \\ ($\impliedby$) Let $G_1$ and $G_2$ be cyclcic and are relatively prime. To prove: $G_1 \times G_2 = G$ is cyclic. \\ $|G_1| |G_2| =lcm(|G_1|, |G_2|)*gcd(|G_1|, |G_2|)$ \\ $o(g_1,g_2) = lcm(o(g_1), o(g_2)) \implies g = (g_1, g_2)$. (Not sure if I understand this proof, might need to re-formulate it)
     \end{enumerate}
+
+==========
+
+No Quiz Today.
