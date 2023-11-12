@@ -8,7 +8,6 @@ export default function Results({ params }: { params: { id: string } }) {
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
       </script>
       <div className="background-image"></div>
-      <h2 className="text-center font-mono font-bold text-2xl">The results are in!</h2>
       <p className="font-mono font-bold text-xl">Task ID: {params.id}</p>
       <Classroom task_id={params.id} />
       <p>
