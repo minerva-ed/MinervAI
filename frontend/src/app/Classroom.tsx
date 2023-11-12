@@ -1,37 +1,39 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { MathJax, MathJaxContext } from "better-react-mathjax";
-
+import Image from 'next/image';
 interface ClassroomProps {
-    task_id: string;
+    taskResult: any;
 }
 
-export default function Classroom({ task_id }: ClassroomProps) {
-    const [taskResult, setTaskResult] = useState(null);
-    const [error, setError] = useState(null);
+export default function ClassroomView({ taskResult }: ClassroomProps) {
+    const [indexState, setIndex] = useState(0);
+    const [lectureIndex, setLectureIndex] = useState(0);
+    const [done, setDone] = useState(false);
 
-    useEffect(() => {
-        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/${task_id}`);
+    const handleNextClick = () => {
+        console.log(indexState, lectureIndex)
+        if (indexState < taskResult.lectures[lectureIndex].QnA.length - 1) {
+            setIndex(indexState + 1);
+        } else if(lectureIndex < taskResult.lectures.length - 1) {
+            setLectureIndex(lectureIndex + 1);
+            setIndex(0);
+        } else {
+            setDone(true)
+        }
+        console.log(indexState, lectureIndex)
+        console.log("handled")
+    };
 
-        ws.onopen = () => console.log('WebSocket Connected');
-
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.error) {
-                setError(data.error);
-            } else {
-                setTaskResult(data);
-            }
-        };
-
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-
-        ws.onclose = () => console.log('WebSocket Disconnected');
-
-        return () => ws.close();
-    }, [task_id]);
+    const imageSrc = (index) => {
+        if (!taskResult.lectures[lectureIndex].QnA[indexState]) {
+            return "/images/s" + (index + 1) + ".png"
+        }
+        if (taskResult.lectures[lectureIndex].QnA[indexState].associated_students_list.includes(index)) {
+            return "/images/s" + (index + 1) + ".png"
+        }else{
+            return "/images/s" + (index + 1) + "_active.png"
+        }
+    }
 
     if (!taskResult) {
         // Render a message or return null to render nothing
@@ -43,20 +45,22 @@ export default function Classroom({ task_id }: ClassroomProps) {
             <span className="sr-only">Loading...</span>
         </div>)
     }
-
-    return (
-        <div className="max-w-4xl mx-auto p-4 whitespace-pre-wrap">
+    if (done) {
+        return (
+            <div>
+                <h1>Detailed Summary</h1>
                 {taskResult.lectures.map((lecture, index) => (
-                <div key={index}>
-                    {/* Display lecture notes */ }
-                    < div className = "bg-white p-6 rounded-lg shadow-md mb-6" >
-                        <h2 className="text-xl font-bold mb-2">Lecture Notes</h2>
+                    <div key={index} className="bg-white p-8 shadow-md my-8 rounded-lg">
+                        <h1 className="text-3xl font-bold">{"Section " + (index + 1)}</h1>
+                        {/* Display lecture notes */}
+                        < div className="bg-white p-6 rounded-lg mb-6" >
+                            <h2 className="text-xl font-bold mb-2">Lecture Notes</h2>
                             <p>{lecture.lecture}</p>
-                    </div>
+                        </div>
 
-                    {/* Display questions and answers */}
-                    <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                        <h2 className="text-xl font-bold mb-2">Questions and Answers</h2>
+                        {/* Display questions and answers */}
+                        <div className="bg-white p-6 rounded-lg mb-6">
+                            <h2 className="text-xl font-bold mb-2">Questions and Answers</h2>
                             {lecture.QnA.map((item, index) => (
                                 <div key={index} className="mb-4">
                                     <h3 className="font-semibold">Question {index + 1}: {item.question}</h3>
@@ -64,8 +68,8 @@ export default function Classroom({ task_id }: ClassroomProps) {
                                     <p className="text-sm text-gray-600">Associated Students: {item.associated_students_list.join(', ')}</p>
                                 </div>
                             ))}
-                    </div> 
-                </div>           
+                        </div>
+                    </div>
                 ))
                 }
                 {/* Display summary */}
@@ -73,7 +77,37 @@ export default function Classroom({ task_id }: ClassroomProps) {
                     <h2 className="text-xl font-bold mb-2">Summary</h2>
                     <p>{taskResult.summary}</p>
                 </div>
+            </div>
+        )
+    }
+    return (
+        <div className="max-w-4xl mx-auto p-4 whitespace-pre-wrap" >
+            <div id="classroom" className="flex flex-col place-content-between bg-contain bg-no-repeat bg-top" style={{backgroundImage: `url(https://raw.githubusercontent.com/dmavani25/MinervAI/0849f885d846f0bee34e6de8bccfb7939481d6a5/frontend/src/app/results/%5Bid%5D/images/Background_wout_student.png)` }}>
+                <div id="whiteboard" className="text-3xl flex-left overflow-y-scroll m-10">
+                    Abstract Algebra
+                    <div className="text-xl">{"Lecture 1, section " + (lectureIndex + 1)}</div>
+                    <div className="text-sm line-clamp-5 w-72">{"Answer: " + taskResult.lectures[lectureIndex].QnA[indexState].answer}</div>
+                </div>
+                
+                <div className="speech-bubble bg-white p-2 rounded shadow-md h-24 m-5 relative">
+                    <div className="line-clamp-3 text-sm">{taskResult.lectures[lectureIndex].QnA[indexState].associated_students_list.length + " student(s) asked: " + taskResult.lectures[lectureIndex].QnA[indexState].question}</div>
+                    <button className="bottom-0 right-5 absolute text-white bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2" onClick={handleNextClick}>Next</button>
+                </div>
+                <div id="students" className="flex flex-row justify-center items-center w-full bottom-0">
+                    {taskResult.students.map((studentInfo, index) => (
+                        <div key={index} className="student mx-2 relative w-36 h-56 flex flex-col">
+                            <p className="text-sm">{studentInfo}</p>
+                            <Image src={imageSrc(index)} alt={"Student" + (index + 1)} className="" layout='fill' objectFit='contain' />
+                        </div>
+                       
+                    ))}
+                </div>
+                {/* Display summary */}
+                {/* <div className="bg-white p-6 rounded-lg shadow-md">
+                    <h2 className="text-xl font-bold mb-2">Summary</h2>
+                    <p>{taskResult.summary}</p>
+                </div> */}
         </div>
-
+    </div>
     );
 }
