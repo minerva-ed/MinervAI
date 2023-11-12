@@ -46,10 +46,10 @@ class ProfessorAgent:
     async def answer_question(self, question):
         return self.kernel.create_semantic_function(f"""Provide a detailed answer to the following question in the context of {self.expertise_area} and {self.lecture_notes}: {question}""", temperature=0.8)()
 
-    async def give_lecture(self, topic):
+    async def give_lecture(self):
         if self.lecture_notes:
             # Incorporating lecture notes into the lecture generation
-            return self.kernel.create_semantic_function(f"""Give a detailed lecture on {topic} related to {self.expertise_area}, using the following notes: {self.lecture_notes}.""")()
+            return self.kernel.create_semantic_function(f"""Give a detailed lecture on related to {self.expertise_area}, using the following notes: {self.lecture_notes}.""")()
         else:
             # Default lecture generation without notes
             return self.kernel.create_semantic_function(f"""Give a detailed lecture on {topic} related to {self.expertise_area}.""")()
@@ -74,7 +74,7 @@ class StudentAgent:
                 new_lecture_content += line + ".\n"
         lecture_content = new_lecture_content
 
-        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that your retention rate of {self.retention_rate}, you are a student with educational background of {self.educational_background} and personality type of {self.personality_type} . Pretend to be the student described above learning from this lecture, state one specific question you have about this lecture, and do not state anything other than the question.""",max_tokens=120,temperature=0.5)()
+        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that your retention rate of {self.retention_rate}, you are a student with educational background of {self.educational_background} and personality type of {self.personality_type} . Pretend to be the student described above learning from this lecture, state one claridying question you have about this lecture, and do not state anything other than the question. If you have a good understading already, you can not asking questions, and respond by saying -1""",max_tokens=120,temperature=0.5)()
 
     async def discuss_with_peer(self, peer, lecture_content):
         # This function simulates discussion between two students
@@ -91,8 +91,7 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
     professor.upload_lecture_notes(f"""Here are some key points and concepts about Groups, Rings, and Fields in LateX: { content }""")
 
     # Simulate classroom interaction
-    lecture_topic = "Groups, Rings and Fields"
-    lecture_content = await professor.give_lecture(lecture_topic)
+    lecture_content = await professor.give_lecture()
     print(lecture_content)
     final_array = []
     print("Question + Answer pairs: ")
@@ -113,3 +112,6 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
             # Log the interaction for analysis
 
 # Run the main function
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(simulate_classroom())
