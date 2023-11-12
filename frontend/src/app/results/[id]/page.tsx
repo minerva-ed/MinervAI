@@ -4,6 +4,9 @@ import Classroom from "@/app/Classroom"
 export default function Results({ params }: { params: { id: string } }) {
   return (
     <div className="flex flex-col items-center gap-16">
+      <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+      </script>
       <div className="background-image"></div>
       <h2 className="text-center font-mono font-bold text-2xl">The results are in!</h2>
       <p className="font-mono font-bold text-xl">Task ID: {params.id}</p>
