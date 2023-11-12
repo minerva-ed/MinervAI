@@ -1,15 +1,38 @@
 'use client';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
+import { MathJax, MathJaxContext } from "better-react-mathjax";
+
 interface ClassroomProps {
-    taskResult: any;
+    task_id: string;
 }
 
-export default function ClassroomView({ taskResult }: ClassroomProps) {
-    const [indexState, setIndex] = useState(0);
+export default function Classroom({ task_id }: ClassroomProps) {
+    const [taskResult, setTaskResult] = useState(null);
+    const [error, setError] = useState(null);
+
     useEffect(() => {
-        setIndex(0);
-    })
+        const ws = new WebSocket(`ws://127.0.0.1:8000/ws/${task_id}`);
+
+        ws.onopen = () => console.log('WebSocket Connected');
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.error) {
+                setError(data.error);
+            } else {
+                setTaskResult(data);
+            }
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        ws.onclose = () => console.log('WebSocket Disconnected');
+
+        return () => ws.close();
+    }, [task_id]);
+
     if (!taskResult) {
         // Render a message or return null to render nothing
         return(<div role="status">
@@ -22,28 +45,35 @@ export default function ClassroomView({ taskResult }: ClassroomProps) {
     }
 
     return (
-        <div className="max-w-4xl mx-auto p-4 whitespace-pre-wrap" >
-            <div id="classroom" className="flex flex-col place-content-between bg-contain bg-no-repeat bg-center" style={{backgroundImage: `url(https://raw.githubusercontent.com/dmavani25/MinervAI/0849f885d846f0bee34e6de8bccfb7939481d6a5/frontend/src/app/results/%5Bid%5D/images/Background_wout_student.png)` }}>
-                <div id="whiteboard" className="text-3xl flex-left px-20 overflow-y-scroll my-36">
-                    Abstract Algebra
-                </div>
-                
-                <div className="speech-bubble bg-white p-2 rounded shadow-md h-16 m-5">
-                    {taskResult.lectures[1].QnA[indexState]}
-                </div>
-                <div id="students" className="flex flex-row justify-center items-center w-full bottom-0">
-                    {Object.entries(taskResult.lectures[1].QnA).map(([k,v], index) => (
-                        <div key={index} className="student mx-2 relative w-36 h-36 flex flex-col">
-                            <Image src={"/images/S" + (index + 1) + ".png"} alt={"Student" + (index + 1)} className="" layout='fill' objectFit='contain' />
-                        </div>
-                    ))}
-                </div>
+        <div className="max-w-4xl mx-auto p-4 whitespace-pre-wrap">
+                {taskResult.lectures.map((lecture, index) => (
+                <div key={index}>
+                    {/* Display lecture notes */ }
+                    < div className = "bg-white p-6 rounded-lg shadow-md mb-6" >
+                        <h2 className="text-xl font-bold mb-2">Lecture Notes</h2>
+                            <p>{lecture.lecture}</p>
+                    </div>
+
+                    {/* Display questions and answers */}
+                    <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+                        <h2 className="text-xl font-bold mb-2">Questions and Answers</h2>
+                            {lecture.QnA.map((item, index) => (
+                                <div key={index} className="mb-4">
+                                    <h3 className="font-semibold">Question {index + 1}: {item.question}</h3>
+                                    <p className="text-gray-700">Answer: {item.answer}</p>
+                                    <p className="text-sm text-gray-600">Associated Students: {item.associated_students_list.join(', ')}</p>
+                                </div>
+                            ))}
+                    </div> 
+                </div>           
+                ))
+                }
                 {/* Display summary */}
-                {/* <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="bg-white p-6 rounded-lg shadow-md">
                     <h2 className="text-xl font-bold mb-2">Summary</h2>
                     <p>{taskResult.summary}</p>
-                </div> */}
+                </div>
         </div>
-    </div>
+
     );
 }
