@@ -89,7 +89,7 @@ class GeneralAgent:
         self.kernel.add_chat_service("chat-gpt", OpenAIChatCompletion("gpt-3.5-turbo", api_key, org_id))
     
     async def generate_summary(self, qa_map):
-        return self.kernel.create_semantic_function(f"""Give a detailed summary of overall and student wise analysis of types, kinds and frequencies of questions asked as per the data in the following map containing questions, answers, and students who asked the questions: {qa_map}.""")()
+        return self.kernel.create_semantic_function(f"""Give a succinct summary of overall and student wise analysis of types, kinds and frequencies of questions asked as per the data in the following map containing questions, answers, and students who asked the questions: {qa_map}.""")()
 
 '''
 Returns a Json Object 
@@ -148,30 +148,35 @@ async def simulate_lecture(lecture, lecture_index, professor, students):
 
 
 # Main simulation function
-async def simulate_classroom(content=load("lecture-notes.txt")):
+async def simulate_classroom(content=load("sample.txt")):
 
     # Create Professor and Student Agents
-    professor = ProfessorAgent("Mathematics")
-    students = [StudentAgent(0.5, 0.7, "really smart liberal arts students studying anthropology"),
-                StudentAgent(0.8, 0.3, "engineering"),
-                StudentAgent(0.95, 0.95, "research in math"),
-                StudentAgent(0.7, 0.3, "physics"),
-                StudentAgent(0.2, 0.2, "art history"),
-                StudentAgent(0.3, 0.4, "political science"),
-                StudentAgent(0.8, 0.5, "engineering"),
-                StudentAgent(0.8, 0.99, "research in statistics")]
+    professor = ProfessorAgent()
+    students = [StudentAgent(0.5, "25%", "really smart liberal arts students studying anthropology"),
+                StudentAgent(0.8, "80%", "engineering"),
+                StudentAgent(0.95, "100%", "research in math"),
+                StudentAgent(0.7, "80%", "physics"),
+                StudentAgent(0.2, "40%", "art history"),
+                StudentAgent(0.3, "50%", "political science"),
+                StudentAgent(0.8, "80%", "engineering"),
+                StudentAgent(0.8, "99%", "research in statistics")]
 
     splitOnSignQuizzes = "=========="
-    lecturesString, quizzes = content.split(splitOnSign)
+    lecturesString, quizzes = content.split(splitOnSignQuizzes)
 
     splitOnSignLectures = "----------"
     lectures = lecturesString.split(splitOnSignLectures)
     lecture_json_list = []
+
+    qna_json_list = []
     for lectureIndex, lecture in enumerate(lectures):
-        lecture_json_list.append(await simulate_lecture(lecture, lectureIndex, professor, students))
+        lecture_json = await simulate_lecture(lecture, lectureIndex, professor, students)
+        lecture_json_list.append(lecture_json)
+        for q_a_pair in lecture_json["QnA"]:
+            qna_json_list.append(q_a_pair)
 
     general_agent = GeneralAgent()
-    summary = await general_agent.generate_summary(lecture_json_list)
+    summary = await general_agent.generate_summary(qna_json_list)
     # Add lecture content and summary
     result_json = {
         "lectures": lecture_json_list,
