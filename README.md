@@ -12,6 +12,9 @@ Users can upload a “lecture file” containing important information. The text
 
 The final output of this tool is a summary file listing Q+A conversations and summary statistics regarding question types (commonly asked questions, question frequency, recurring “keyword” concepts and more).
 
+<h2>Requirements for running</h2>
+The required packages needed to run MinervAI are included in the requirements.txt file.
+
 
 
 
