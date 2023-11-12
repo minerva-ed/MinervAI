@@ -3,12 +3,6 @@ export default function Results({ params }: { params: { id: string } }) {
 
   return (
     <div className="background-image">
-    <div className="relative w-full h-full">
-
-      </div>
-
-
-
     </div>
   
    
