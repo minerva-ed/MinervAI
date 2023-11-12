@@ -25,7 +25,13 @@ async def upload_and_start_simulation(file: UploadFile = File(...)):
         "status": "in progress",
         "result": None
     }
-    asyncio.create_task(run_simulation(task_id, file.read()))
+
+    content = await file.read()
+    file_string = content.decode('utf-8')
+
+    print("received file upload:", file_string)
+    asyncio.create_task(run_simulation(task_id, file_string))
+    
     return {"task_id": task_id, "message": "Simulation started"}
 
 async def run_simulation(task_id: str, content: str):
@@ -42,7 +48,9 @@ async def websocket_endpoint(websocket: WebSocket, task_id: str):
             await websocket.send_text("Task not found")
             return
         while task["status"] == "in progress":
+            print("in-progress")
             await asyncio.sleep(1)
         await websocket.send_json(task["result"])
     finally:
+        print("websocket closing")
         await websocket.close()
