@@ -2,8 +2,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-export default function Classroom({ task_id }) {
-    const router = useRouter();
+interface ClassroomProps {
+    task_id: string;
+}
+
+export default function Classroom({ task_id }: ClassroomProps) {
     const [taskResult, setTaskResult] = useState(null);
     const [error, setError] = useState(null);
 
@@ -18,7 +21,6 @@ export default function Classroom({ task_id }) {
                 setError(data.error);
             } else {
                 setTaskResult(data);
-                router.push(`/results/${task_id}`);
             }
         };
 
@@ -29,7 +31,7 @@ export default function Classroom({ task_id }) {
         ws.onclose = () => console.log('WebSocket Disconnected');
 
         return () => ws.close();
-    }, [task_id, router]);
+    }, [task_id]);
 
     return (
         <div className="flex flex-col items-center justify-center p-4">
