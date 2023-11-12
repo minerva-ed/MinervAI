@@ -1,5 +1,4 @@
 import Classroom from "@/app/Classroom"
-import './class.css'
 
 
 export default function Results({ params }: { params: { id: string } }) {

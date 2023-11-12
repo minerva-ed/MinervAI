@@ -5,17 +5,3 @@
     height: 100vh; 
     width: 100%;
   }
-
-
-  .bubble-image {
-    background-image: url('bubble1.png');
-    position: absolute; /* Positioning relative to the nearest positioned ancestor */
-    right: 0; /* Align to the right side */
-    top: 50%; /* Adjust this value as needed to position the image vertically */
-    transform: translateY(-50%); /* This centers the image vertically */
-    width: 561 px;
-    height: 202 px;
-    /* Add other styling as needed */
-  }
-
-
