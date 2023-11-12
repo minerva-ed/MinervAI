@@ -4,3 +4,4 @@ pyautogen
 fastapi
 uvicorn
 scikit-learn
+python-multipart
