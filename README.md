@@ -17,15 +17,15 @@ The semantic kernel package can be installed using the command ***python3 -m pip
 
 Other packages can be installed using ***pip3 install ...***. 
 
-# MinervAI - Team Contributions
+## MinervAI - Team Contributions
 
 MinervAI is an innovative educational tool designed to empower teachers through interactions with AI-simulated classrooms. This project was developed as part of the HackUMass XI Hackathon, where it was awarded the Grand Overall Prize.
 
 We would like to firstly thank Taichi Kato (one of our pivotal founding members) for giving an awesome introduction to Semantic Kernels, and making pivotal contributions to the project with us!!
 
-## Team Members & Contributions
+### Team Members & Contributions
 
-### Dhyey Mavani
+#### Dhyey Mavani
 - **Role:** Backend Development & Project Management
 - **Contributions:**
   - Initiated the backend agents OOP framework.
@@ -34,21 +34,21 @@ We would like to firstly thank Taichi Kato (one of our pivotal founding members)
   - Played a key role in the initial system design and conceptualization of the project.
   - Drew Insights from previous projects such as LogFlowAI (Backed by Y Combinator), and MammothEdu from HackMIT
 
-### Muhammad Ahsan Tahir
+#### Muhammad Ahsan Tahir
 - **Role:** Backend Development
 - **Contributions:**
   - Focused on back-end development, particularly on the question similarity detector and output JSON.
   - Developed all agent classes including prompt engineering.
   - Worked on making function calls concurrent to speed up run time.
 
-### Sawyer Pollard
+#### Sawyer Pollard
 - **Role:** Frontend Development
 - **Contributions:**
   - Co-developed the frontend using React and TailwindCSS.
   - Assisted in architecting the backend and frontend connection.
   - Designed a robust web file upload system with rich user feedback.
 
-### Sebastien Brown
+#### Sebastien Brown
 - **Role:** Frontend and Backend Integration
 - **Contributions:**
   - Worked on front-end design and styling.
@@ -56,14 +56,14 @@ We would like to firstly thank Taichi Kato (one of our pivotal founding members)
   - Assisted in initial system design and development of the pitch concept and deck.
   - Drew Insights from previous projects such as LogFlowAI (Backed by Y Combinator), and MammothEdu from HackMIT
 
-### TinaZS Zhang
+#### TinaZS Zhang
 - **Role:** Frontend Development & Design
 - **Contributions:**
   - Created wireframes and graphics for the project.
   - Led the front-end design using React and TailwindCSS.
   - Involved in prompt engineering and development of the pitch deck.
 
-### Taichi Kato
+#### Taichi Kato
 - **Role:** Full Stack Development
 - **Contributions:**
   - Contributed to both frontend and backend development.
