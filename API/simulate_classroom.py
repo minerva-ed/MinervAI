@@ -79,7 +79,7 @@ class StudentAgent:
                 new_lecture_content += line + ".\n"
         lecture_content = new_lecture_content
 
-        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that your retention rate of {self.retention_rate}, you are a student with educational background of {self.educational_background} and personality type of {self.personality_type} . Pretend to be the student described above learning from this lecture, state one clarifying question you have about this lecture, and do not state anything other than the question. If you have a good understading already, you can not asking questions, and respond by saying -1""",max_tokens=120,temperature=0.5)()
+        return self.kernel.create_semantic_function(f"""As a student, you went through the following {lecture_content}: Pretend that you are a student with educational background of {self.educational_background} and personality type of {self.personality_type} . Pretend to be the student described above learning from this lecture, state one clarifying question you have about this lecture, and do not state anything other than the question. If you have a good understading already, you can not asking questions, and respond by saying -1""",max_tokens=120,temperature=0.5)()
 
     async def discuss_with_peer(self, peer, lecture_content):
         # This function simulates discussion between two students
@@ -90,8 +90,14 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
 
     # Create Professor and Student Agents
     professor = ProfessorAgent("Mathematics")
-    students = [StudentAgent(0.5, "extroverted", "really dumb liberal arts students studying anthropology")
-                , StudentAgent(0.9, "introverted", "engineering")]
+    students = [StudentAgent(0.5, "extroverted", "really dumb liberal arts students studying anthropology"), 
+                StudentAgent(0.8, "introverted", "engineering"),
+                StudentAgent(0.95, "extroverted", "research in math"),
+                StudentAgent(0.7, "introverted", "physics"),
+                StudentAgent(0.2, "introverted", "art history"),
+                StudentAgent(0.3, "extroverted", "political science"),
+                StudentAgent(0.8, "introverted", "engineering"),
+                StudentAgent(0.8, "extroverted", "research in statistics")]
     # Example: Upload lecture notes
     professor.upload_lecture_notes(f"""Here are some key points and concepts about Groups, Rings, and Fields in LateX: { content }""")
 
@@ -102,10 +108,13 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
     print("Question + Answer pairs: ")
     for student in students:
         question = await student.generate_questions(lecture_content.result)
+        if question.result == "-1":
+            continue
+            
         should_ask = True
         for index, [old_question, old_answer, counter] in enumerate(final_array):
             similarity_threshold = 0.75  # Adjust the threshold as needed
-            if calculate_cosine_similarity(old_question, question) > similarity_threshold:
+            if calculate_cosine_similarity(old_question, question.result) > similarity_threshold:
                 should_ask = False
                 final_array[index][2]+=1
                 break
@@ -117,8 +126,10 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
         final_array.append([question.result, answer.result, 1])
         print("Question: ", question.result)
         print("Answer: ", answer.result)
-
-    print(final_array)
+    
+    print(len(final_array))
+    for index, [question, answer, counter] in enumerate(final_array):
+        print(f"""Index: {index}  Counter {counter}""")
     return {"lecture": lecture_content.result, "qa_array": final_array}
     # Log the interaction for analysis
     # save_to_report(final_array)
