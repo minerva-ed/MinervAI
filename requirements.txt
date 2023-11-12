@@ -3,3 +3,4 @@ openai
 pyautogen
 fastapi
 uvicorn
+scikit-learn
