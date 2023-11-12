@@ -61,7 +61,7 @@ class ProfessorAgent:
 
 class StudentAgent:
     def __init__(self, retention_rate, personality_type, educational_background):
-        self.retention_rate = retention_rate # 10%, 30%, 70%, 90%
+        self.retention_rate = retention_rate # 0.1, 0.2, 0.8
         self.personality_type = personality_type # Introverted, Extroverted
         self.educational_background = educational_background # Liberal Arts, Engineering, Pure Researcher
         
@@ -85,6 +85,15 @@ class StudentAgent:
         # This function simulates discussion between two students
         pass
 
+class GeneralAgent:
+    def __init__(self):
+        self.kernel = sk.Kernel()
+        self.kernel.add_chat_service("chat-gpt", OpenAIChatCompletion("gpt-3.5-turbo", api_key, org_id))
+    
+    async def generate_summary(self, qa_map):
+        return self.kernel.create_semantic_function(f"""Give a detailed summary of overall and student wise analysis of types, kinds and frequencies of questions asked as per the data in the following map containing questions, answers, and students who asked the questions: {qa_map}.""")()
+
+
 # Main simulation function
 async def simulate_classroom(content=load("lecture-notes.txt")):
 
@@ -103,9 +112,9 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
 
     # Simulate classroom interaction
     lecture_content = await professor.give_lecture()
-    print(lecture_content)
+    #print(lecture_content)
     final_array = []
-    print("Question + Answer pairs: ")
+    #print("Question + Answer pairs: ")
     for student_index, student in enumerate(students):
         question = await student.generate_questions(lecture_content.result)
         if question.result == "-1":
@@ -124,21 +133,33 @@ async def simulate_classroom(content=load("lecture-notes.txt")):
 
         answer = await professor.answer_question(question.result)
         final_array.append([question.result, answer.result, [student_index]])
-        print("Question: ", question.result)
-        print("Answer: ", answer.result)
+        #print("Question: ", question.result)
+        #print("Answer: ", answer.result)
     
     print(len(final_array))
     for index, [question, answer, associated_students_list] in enumerate(final_array):
         print(f"""Index: {index}, Student {associated_students_list}""")
-    return {"lecture": lecture_content.result, "qa_array": final_array}
-    # Log the interaction for analysis
-    # save_to_report(final_array)
+    
+    # Modify the final Q-A map output structure
+    qa_map_output = []
+    for question, answer, associated_students_list in final_array:
+        q_a_pair = {
+            "question": question,
+            "answer": answer,
+            "associated_students_list": associated_students_list
+        }
+        qa_map_output.append(q_a_pair)
 
-    # Simulate break time interaction
-    # for i in range(len(students)):
-    #     for j in range(i + 1, len(students)):
-    #         await students[i].discuss_with_peer(students[j], lecture_content)
-            # Log the interaction for analysis
+    general_agent = GeneralAgent()
+    summary = await general_agent.generate_summary(qa_map_output)
+    # Add lecture content and summary
+    result_json = {
+        "lecture": lecture_content.result,
+        "questions": qa_map_output,
+        "summary": summary.result  # Replace with an actual summary if available
+    }
+    print(result_json)
+    return result_json
 
 
 # Run the main function
