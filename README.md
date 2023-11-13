@@ -57,10 +57,9 @@ We would like to firstly thank Taichi Kato (one of our pivotal founding members)
   - Drew Insights from previous projects such as LogFlowAI (Backed by Y Combinator), and MammothEdu from HackMIT
 
 #### TinaZS Zhang
-- **Role:** Frontend Development & Design
+- **Role:** Frontend Design & Pitch
 - **Contributions:**
   - Created wireframes and graphics for the project.
-  - Led the front-end design using React and TailwindCSS.
   - Involved in prompt engineering and development of the pitch deck.
 
 #### Taichi Kato
