@@ -34,8 +34,7 @@ We would like to firstly thank Taichi Kato (one of our pivotal founding members)
 
 ### Team Members & Contributions
 
-Developed by Taichi Kato, Tina Zhang, Dhyey Mavani, Seb Brown, Muhammad Ahsan Tahir, and Sawyer Pollard
-
+Developed by Taichi Kato, Tina Zhang, Dhyey Mavani, Seb Brown, Muhammad Ahsan Tahir, and Sawyer Pollard. All are current students of Amherst College.
 
 
 
