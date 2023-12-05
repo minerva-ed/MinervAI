@@ -20,8 +20,4 @@ The semantic kernel package can be installed using the command ***python3 -m pip
 
 Other packages can be installed using ***pip3 install ...***. 
 
-
-
-
-
-
+Use **uvicorn server:app --reload** to run the web server, and **npm run dev** to run the frontend.
