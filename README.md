@@ -1,9 +1,6 @@
 # MinervAI
 ![output-onlinepngtools](https://github.com/dmavani25/MinervAI/assets/107078090/8413ebde-629f-4307-bfba-ca26f8a41b7c)
 
-by Tina Zhang, Ahsan Randhawa, Sebastien Brown, Taichi Kato, Dhyey Mavani, Sawyer Pollard \
-for HackUmass XI, 2023
-
 Empowering teachers through interactions with realistic simulated classrooms. MinervAI combines AI agent students with various backgrounds and proficiencies to help educators better understand students and the ways in which they think.
 
 In this beta version of MinervAI,  language models serve as AI agents in the classroom: each is initialized with a distinct personality (ex: “confident”), background (ex: “liberal arts student with math training”) and weight factor (which varies the scale of the 2 prior features’ impact) which influences their understanding of topics.
