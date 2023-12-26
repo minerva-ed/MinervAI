@@ -3,6 +3,7 @@ import asyncio
 import uuid
 import simulate_classroom as sc
 from fastapi.middleware.cors import CORSMiddleware
+import json
 
 app = FastAPI()
 
@@ -39,6 +40,20 @@ async def run_simulation(task_id: str, content: str):
     tasks[task_id]["status"] = "completed"
     tasks[task_id]["result"] = result
 
+
+@app.websocket("/ws/sample")
+async def sample_websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        with open('sample-response.json', 'r') as f:
+            data = json.load(f)
+        await websocket.send_json(data)
+    finally:
+        print("sample websocket closing")
+        await websocket.close()
+
+    
+
 @app.websocket("/ws/{task_id}")
 async def websocket_endpoint(websocket: WebSocket, task_id: str):
     await websocket.accept()
@@ -55,3 +70,5 @@ async def websocket_endpoint(websocket: WebSocket, task_id: str):
     finally:
         print("websocket closing")
         await websocket.close()
+
+
