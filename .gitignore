@@ -41,3 +41,6 @@ next-env.d.ts
 
 .DS_Store
 *.pyc
+
+*__pycache__*
+MinervAI.code-workspace
