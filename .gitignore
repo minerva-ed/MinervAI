@@ -44,3 +44,4 @@ next-env.d.ts
 
 *__pycache__*
 MinervAI.code-workspace
+API/__pycache__/*
