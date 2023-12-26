@@ -4,6 +4,7 @@ import uuid
 import simulate_classroom as sc
 from fastapi.middleware.cors import CORSMiddleware
 import json
+import utilities
 
 # Initialize the FastAPI app
 app = FastAPI()
@@ -65,7 +66,7 @@ async def run_simulation(task_id: str, content: str):
 async def sample_websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
-        with open('sample-response.json', 'r') as f:
+        with open('samples/sample-response.json', 'r') as f:
             data = json.load(f)
         await websocket.send_json(data)
     finally:
