@@ -1,11 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-interface ClassroomProps {
+interface SimulatorProps {
     taskResult: any;
 }
 
-export default function ClassroomView({ taskResult }: ClassroomProps) {
+export default function SimulatorView({ taskResult }: SimulatorProps) {
     const [indexState, setIndex] = useState(0);
     const [lectureIndex, setLectureIndex] = useState(0);
     const [done, setDone] = useState(false);
