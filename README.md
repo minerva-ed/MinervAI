@@ -18,7 +18,7 @@ Also included is a websocket web server which allows for asynchronous connection
 
 Finally, the front-end server can be started by calling `npm run dev`, more information is found in the `frontend` directory.
 
-
+Use **uvicorn server:app --reload** to run the web server, and **npm run dev** to run the frontend.
 
 <h2>Requirements for running</h2>
 
@@ -35,6 +35,3 @@ We would like to firstly thank Taichi Kato (one of our pivotal founding members)
 ### Team Members & Contributions
 
 Developed by Taichi Kato, Tina Zhang, Dhyey Mavani, Seb Brown, Muhammad Ahsan Tahir, and Sawyer Pollard. All are current students of Amherst College.
-
-
-
