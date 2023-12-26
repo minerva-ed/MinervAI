@@ -81,7 +81,7 @@ export default function ClassroomView({ taskResult }: ClassroomProps) {
         )
     }
     return (
-        <div className="flex mx-auto whitespace-pre-wrap h-3/4">
+        <div className="flex flex-col mx-auto whitespace-pre-wrap h-3/4">
             <div id="classroom" className="flex flex-col place-content-between bg-contain bg-no-repeat bg-top" style={{backgroundImage: `url(https://raw.githubusercontent.com/dmavani25/MinervAI/0849f885d846f0bee34e6de8bccfb7939481d6a5/frontend/src/app/results/%5Bid%5D/images/Background_wout_student.png)` }}>
                 <div id="whiteboard" className="text-3xl flex-left overflow-y-scroll m-10">
                     Abstract Algebra
@@ -108,9 +108,9 @@ export default function ClassroomView({ taskResult }: ClassroomProps) {
                     <p>{taskResult.summary}</p>
                 </div> */}
             </div>
-            <div className="w-96 mx-10">
+            <div className="">
                 <div className="w-full bg-white p-6 rounded-lg shadow-md mb-6">
-                    <h2 className="text-xl font-bold mb-2">Lecture Notes</h2>
+                    <h2 className="text-xl font-bold mb-2">Lecture Notes (AI-generated)</h2>
                     <p>{taskResult.lectures[lectureIndex].lecture}</p>
                 </div>
             </div>
