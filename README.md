@@ -1,5 +1,6 @@
 # MinervAI
 ![output-onlinepngtools](https://github.com/dmavani25/MinervAI/assets/107078090/8413ebde-629f-4307-bfba-ca26f8a41b7c)
+![demo](demo.png)
 
 Empowering teachers through interactions with realistic simulated classrooms. MinervAI combines AI agent students with various backgrounds and proficiencies to help educators better understand students and the ways in which they think.
 
@@ -9,12 +10,28 @@ Users can upload a “lecture file” containing important information. The text
 
 The final output of this tool is a summary file listing Q+A conversations and summary statistics regarding question types (commonly asked questions, question frequency, recurring “keyword” concepts and more).
 
+## API and Frontend
+
+The API is built partially with SemanticKernel to manage different contexts and connections to LLM providers (we use OpenAI's chat-gpt-3.5 and chat-gpt-4-turbo). You can test this out by running `python3 server.py`.
+
+Also included is a websocket web server which allows for asynchronous connection to the API, to stream results. This server is built with FastAPI and Uvicorn, which can be executed by `uvicorn server:app --reload`.
+
+Finally, the front-end server can be started by calling `npm run dev`, more information is found in the `frontend` directory.
+
+Use **uvicorn server:app --reload** to run the web server, and **npm run dev** to run the frontend.
+
 <h2>Requirements for running</h2>
 
 The required packages needed to run MinervAI are included in the ***requirements.txt*** file.
 
-The semantic kernel package can be installed using the command ***python3 -m pip install semantic-kernel***.
+All packages can be installed using `pip3 install -r requirements.txt` command. 
 
-Other packages can be installed using ***pip3 install ...***. 
+## MinervAI - Team Contributions
 
-Use **uvicorn server:app --reload** to run the web server, and **npm run dev** to run the frontend.
+MinervAI is an innovative educational tool designed to empower teachers through interactions with AI-simulated classrooms. This project was developed as part of the HackUMass XI Hackathon, where it was awarded the **Grand Overall Prize**.
+
+We would like to firstly thank Taichi Kato (one of our pivotal founding members) for giving an awesome introduction to Semantic Kernels, and making pivotal contributions to the project with us!!
+
+### Team Members & Contributions
+
+Developed by Taichi Kato, Tina Zhang, Dhyey Mavani, Seb Brown, Muhammad Ahsan Tahir, and Sawyer Pollard. All are current students of Amherst College.
