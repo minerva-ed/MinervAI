@@ -1,3 +1,10 @@
+import semantic_kernel as sk  # Import the semantic_kernel library
+from semantic_kernel.connectors.ai.open_ai import OpenAIChatCompletion  # Import OpenAIChatCompletion from the semantic_kernel library
+from semantic_kernel import PromptTemplateConfig, PromptTemplate, SemanticFunctionConfig  # Import additional classes from semantic_kernel
+
+# Prepare OpenAI service using credentials stored in the `.env` file
+api_key, org_id = sk.openai_settings_from_dot_env()  # Retrieve API key and organization ID from a .env file
+
 # Define a class to represent a General Agent
 class GeneralAgent:
     def __init__(self):
