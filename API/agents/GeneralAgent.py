@@ -18,3 +18,6 @@ class GeneralAgent:
 
     async def get_personality(self, myString):
         return self.kernel.create_semantic_function(f"""Give 5 words seperated by commas that describe a student with the following background and retention rates where retention rate describes fraction of information that a student learns from a lecture. {myString}""")()
+    async def get_prospects(self, product_description, sales_profile):
+        return self.kernel.create_semantic_function(f"""As a junior sales associate, your job is to find relevant companies that your team might be interested in selling your product to. Given the following sales profile, which may contain ideas about current customers, where in the sales process a potential client might be in, and some other information about your product, give recommendation on additional companies which you might want to sell to as well. Product: {product_description} \n\n Sales profile: \n {sales_profile} \n\n Give your response in JSON format, like [{{"company_name": "minerva", "reasoning": "b2b sales saas similar to current customers"}}]
+        """, max_tokens=512)()

@@ -1,6 +1,7 @@
 # Import necessary packages
 import time  # Import time module for time-related tasks
 import asyncio
+import json
 
 import utilities as util
 from agents.GeneralAgent import GeneralAgent  # Import GeneralAgent from agents/GeneralAgent.py
@@ -40,13 +41,14 @@ async def simulate_sales(sales_material, sales_index, sales_agent, customer_agen
             continue
 
         # Add the professor's response coroutine for the new question
-        sales_coroutines.append(sales_agent.answer_question(customer_agents[customer_index], question.result))
         question_answer_array.append([question.result, "PLACEHOLDER", [customer_index]])  # Add new question to the array
 
     # Gather all responses from the professor
-    sales_answers = await asyncio.gather(*sales_coroutines)
+    sales_answers_str = await sales_agent.answer_question(customer_agents, all_questions)
+    sales_answers = json.loads(sales_answers_str)
+    
     for index in range(len(question_answer_array)):
-        question_answer_array[index][1] = sales_answers[index].result  # Update answers in the Q&A array
+        question_answer_array[index][1] = sales_answers[index]  # Update answers in the Q&A array
 
     # Create a JSON object for the lecture
     qa_map_output = []
@@ -65,15 +67,13 @@ async def simulate_sales(sales_material, sales_index, sales_agent, customer_agen
     return sales_Json  # Return the sales JSON object
 
 # Define the main function to simulate a classroom
-async def simulate_clients(content):
+async def simulate_clients(content, customers_json = ""):
     start_time = time.time()  # Record the start time of the simulation
 
+    customers = json.loads(customers_json)
     # Create instances of Professor and Student Agents
     sales_agent = SalesAgent()  # Instantiate a SalesAgent
-    customer_agents = [CustomerAgent("Google","An internet company which builds serach engines. Most of its revenue comes from ads."),
-                    #    CustomerAgent("McDonalds","A fast food company which sells burgers. Most of its revenue comes from selling burgers."), 
-                    #    CustomerAgent("Walmart","A retail company which sells groceries. Most of its revenue comes from selling groceries."), 
-                       CustomerAgent("Sequoia","A venture capital firm which invests in startups. Most of its revenue comes from investing in successful startups.")]
+    customer_agents = [CustomerAgent(c["companyName"], c["description"]) for c in customers]
     splitOnSignSales = "----------"  # Define a delimiter for splitting lecture content
     sales = content.split(splitOnSignSales)  # Split the content into individual lectures
     sales_json_list = []  # Initialize a list to store lecture JSON objects
@@ -98,7 +98,7 @@ async def simulate_clients(content):
     #     student_list.append(newString.result)
         
     result_json = {
-        "lectures": sales_json_list,
+        "sales": sales_json_list,
         "summary": summary.result, # Include the summary in the result
         "qna": qna_json_list
     }
@@ -116,4 +116,4 @@ async def simulate_clients(content):
 # Execute the main function if this script is run as the main module
 if __name__ == "__main__":
     import asyncio  # Import asyncio for asynchronous execution
-    asyncio.run(simulate_clients(util.load("samples/sales/sample.txt")))  # Run the simulate_classroom coroutine
+    asyncio.run(simulate_clients(util.load("samples/sales/sample.txt"), util.load("samples/sales/sample-customers.json")))  # Run the simulate_classroom coroutine

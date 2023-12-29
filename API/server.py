@@ -1,7 +1,8 @@
-from fastapi import FastAPI, WebSocket, UploadFile, File
+from fastapi import FastAPI, WebSocket, UploadFile, File, Form
 import asyncio
 import uuid
-import simulate_classroom as sc
+import simulate_clients as sc
+import prospect_generator as pg
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import utilities
@@ -23,7 +24,7 @@ app.add_middleware(
 tasks = {}
 
 @app.post("/upload/")
-async def upload_and_start_simulation(file: UploadFile = File(...)):
+async def upload_and_start_simulation(file: UploadFile = File(...), customers: str = Form(...)):
     """
     Endpoint to upload a file and start a simulation task.
     Generates a unique task ID for each upload and initiates an asynchronous simulation task.
@@ -44,12 +45,11 @@ async def upload_and_start_simulation(file: UploadFile = File(...)):
     file_string = content.decode('utf-8')
 
     # Log file receipt and start the simulation in an asynchronous task
-    print("received file upload:", file_string)
-    asyncio.create_task(run_simulation(task_id, file_string))
+    asyncio.create_task(run_simulation(task_id, file_string, customers))
     
     return {"task_id": task_id, "message": "Simulation started"}
 
-async def run_simulation(task_id: str, content: str):
+async def run_simulation(task_id: str, content: str, customers: str):
     """
     Asynchronous function to run the simulation.
     Updates the task's status and result in the global tasks dictionary upon completion.
@@ -57,16 +57,24 @@ async def run_simulation(task_id: str, content: str):
     :param content: Content of the uploaded file to simulate.
     """
     # Perform simulation and store the result
-    result = await sc.simulate_classroom(content)
+    result = await sc.simulate_clients(content, customers)
     tasks[task_id]["status"] = "completed"
     tasks[task_id]["result"] = result
 
+@app.post("/customer-profiles/")
+async def generate_customer_profiles(product_file: UploadFile = File(...), sales_profile: str = Form(...)):
+    # product_details = await product_file.read()
+    # print("generate profiles:", product_details, sales_profile)
+    # return await pg.generate_prospects(product_details, sales_profile)
+    with open('samples/sales/sample-customers.json', 'r') as f:
+        data = json.load(f)
+        return data
 
 @app.websocket("/ws/sample")
 async def sample_websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
-        with open('samples/sample-response.json', 'r') as f:
+        with open('samples/sales/sample-response.json', 'r') as f:
             data = json.load(f)
         await websocket.send_json(data)
     finally:
