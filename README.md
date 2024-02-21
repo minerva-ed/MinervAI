@@ -1,3 +1,4 @@
+## This repository contains Minerva, a classroom simulator which won 1st place at HackUMass2023. We have productionized this prototype into a softawre as a service targeting sales team, which can be found [here](https://minervai.co)
 # MinervAI
 ![output-onlinepngtools](https://github.com/dmavani25/MinervAI/assets/107078090/8413ebde-629f-4307-bfba-ca26f8a41b7c)
 ![demo](demo.png)
